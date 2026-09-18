@@ -1,15 +1,15 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Wedding of Yogi &amp; Ratna — 12 Oktober 2025</title>
-<meta name="description" content="Undangan pernikahan Yogi Pratama &amp; Ratna Sari. Minggu, 12 Oktober 2025 di Padang, Sumatera Barat.">
+<title>The Wedding of Yogi &amp; Ratna — 12 Oktober 2026</title>
+<meta name="description" content="Undangan pernikahan Yogi Pratama &amp; Ratna Sari. Senin, 12 Oktober 2026 di Padang, Sumatera Barat.">
 <meta name="theme-color" content="#5B1220">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Wedding of Yogi &amp; Ratna">
-<meta property="og:description" content="Minggu, 12 Oktober 2025 — Gedung Basko Padang. Adat Basandi Syarak, Syarak Basandi Kitabullah.">
+<meta property="og:description" content="Senin, 12 Oktober 2026 — Gedung Basko Padang. Adat Basandi Syarak, Syarak Basandi Kitabullah.">
 <meta property="og:image" content="assets/img/og-cover.svg">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%235B1220'/%3E%3Cpath d='M16 7l2.6 5.4 6 .8-4.3 4.2 1 5.9-5.3-2.8-5.3 2.8 1-5.9L7.4 13.2l6-.8z' fill='%23C9A55C'/%3E%3C/svg%3E">
@@ -61,7 +61,7 @@
       <p class="cover__to-name" id="guestName">Tamu Undangan</p>
     </div>
 
-    <p class="cover__date">12 . 10 . 2025</p>
+    <p class="cover__date" data-tanggal="titik">12 . 10 . 2026</p>
 
     <button class="btn btn--gold cover__open" id="btnOpen" type="button">
       <span>Buka Undangan</span>
@@ -99,18 +99,18 @@
        2. HOME / HERO
   ========================================================== -->
   <section class="hero" id="home">
-    <div class="hero__inner reveal">
-      <p class="eyebrow eyebrow--dark">The Wedding of</p>
-      <h2 class="hero__name">Yogi Pratama</h2>
-      <p class="hero__parents">Putra dari Bapak Ir. Andi Pratama &amp; Ibu Siti Aisyah<br><em>(Suku Melayu, Nagari Koto Gadang)</em></p>
+    <div class="hero__inner" data-stagger="110">
+      <p class="eyebrow eyebrow--dark" data-anim="down">The Wedding of</p>
+      <h2 class="hero__name" data-anim="up">Yogi Pratama</h2>
+      <p class="hero__parents" data-anim="up">Putra dari Bapak Ir. Andi Pratama &amp; Ibu Siti Aisyah<br><em>(Suku Melayu, Nagari Koto Gadang)</em></p>
 
-      <div class="divider divider--amp"><span>&amp;</span></div>
+      <div class="divider divider--amp" data-anim="wipe"><span>&amp;</span></div>
 
-      <h2 class="hero__name">Ratna Sari</h2>
-      <p class="hero__parents">Putri dari Bapak H. Yusuf Dt. Rajo Nan Sati &amp; Ibu Hj. Marlina<br><em>(Suku Caniago, Nagari Sungai Puar)</em></p>
+      <h2 class="hero__name" data-anim="up">Ratna Sari</h2>
+      <p class="hero__parents" data-anim="up">Putri dari Bapak H. Yusuf Dt. Rajo Nan Sati &amp; Ibu Hj. Marlina<br><em>(Suku Caniago, Nagari Sungai Puar)</em></p>
 
-      <div class="hero__meta">
-        <span class="chip"><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg>12 Oktober 2025</span>
+      <div class="hero__meta" data-anim="up">
+        <span class="chip"><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg><span data-tanggal="panjang">12 Oktober 2026</span></span>
         <span class="chip"><svg viewBox="0 0 24 24"><use href="#ic-pin"/></svg>Gedung Basko Padang</span>
       </div>
     </div>
@@ -122,15 +122,15 @@
   <section class="countdown band band--maroon">
     <div class="band__ornament" aria-hidden="true"></div>
     <div class="container reveal">
-      <h3 class="title title--light">Hitung Mundur</h3>
-      <p class="subtitle subtitle--light">Menuju Hari Bahagia</p>
-      <img class="ornamen-pembatas" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
+      <h3 class="title title--light" data-anim="down">Hitung Mundur</h3>
+      <p class="subtitle subtitle--light" data-anim="up">Menuju Hari Bahagia</p>
+      <img class="ornamen-pembatas" data-anim="wipe" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
 
-      <div class="countdown__grid" id="countdown" role="timer" aria-live="off">
-        <div class="cd"><span class="cd__num" data-cd="days">00</span><span class="cd__label">Hari</span></div>
-        <div class="cd"><span class="cd__num" data-cd="hours">00</span><span class="cd__label">Jam</span></div>
-        <div class="cd"><span class="cd__num" data-cd="minutes">00</span><span class="cd__label">Menit</span></div>
-        <div class="cd"><span class="cd__num" data-cd="seconds">00</span><span class="cd__label">Detik</span></div>
+      <div class="countdown__grid" id="countdown" data-stagger="120" role="timer" aria-live="off">
+        <div class="cd" data-anim="drop"><span class="cd__num" data-cd="days">00</span><span class="cd__label">Hari</span></div>
+        <div class="cd" data-anim="drop"><span class="cd__num" data-cd="hours">00</span><span class="cd__label">Jam</span></div>
+        <div class="cd" data-anim="drop"><span class="cd__num" data-cd="minutes">00</span><span class="cd__label">Menit</span></div>
+        <div class="cd" data-anim="drop"><span class="cd__num" data-cd="seconds">00</span><span class="cd__label">Detik</span></div>
       </div>
       <p class="countdown__done" id="countdownDone" hidden>Alhamdulillah, hari bahagia telah tiba.</p>
     </div>
@@ -141,7 +141,7 @@
   ========================================================== -->
   <section class="verse band band--cream">
     <div class="container container--narrow reveal">
-      <img class="ornamen-crest" src="assets/img/ornamen/asset5.webp" alt="" loading="lazy" width="800" height="728">
+      <img class="ornamen-crest" data-anim="zoom" src="assets/img/ornamen/asset5.webp" alt="" loading="lazy" width="800" height="728">
       <p class="verse__arabic" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَءَايَٰتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
       <p class="verse__ref">(QS. Ar-Rum : 21)</p>
       <p class="verse__motto">Adat Basandi Syarak, Syarak Basandi Kitabullah</p>
@@ -153,12 +153,12 @@
   ========================================================== -->
   <section class="couple band band--cream-alt" id="mempelai">
     <div class="container reveal">
-      <img class="ornamen-crest ornamen-crest--lebar" src="assets/img/ornamen/asset4.webp" alt="" loading="lazy" width="800" height="585">
-      <h3 class="title">Mempelai</h3>
-      <p class="subtitle">Dua Hati, Satu Tujuan</p>
+      <img class="ornamen-crest ornamen-crest--lebar" data-anim="zoom" src="assets/img/ornamen/asset4.webp" alt="" loading="lazy" width="800" height="585">
+      <h3 class="title" data-anim="down">Mempelai</h3>
+      <p class="subtitle" data-anim="up">Dua Hati, Satu Tujuan</p>
 
       <div class="couple__grid">
-        <article class="person">
+        <article class="person" data-anim="left">
           <div class="person__frame">
             <img src="assets/img/foto/groom.webp" alt="Foto mempelai pria, Yogi Pratama" loading="lazy" width="202" height="269">
           </div>
@@ -169,9 +169,9 @@
           </div>
         </article>
 
-        <div class="couple__amp" aria-hidden="true"><span>&amp;</span></div>
+        <div class="couple__amp" aria-hidden="true" data-anim="zoom"><span>&amp;</span></div>
 
-        <article class="person person--rev">
+        <article class="person person--rev" data-anim="right">
           <div class="person__frame">
             <img src="assets/img/foto/bride.webp" alt="Foto mempelai wanita, Ratna Sari" loading="lazy" width="620" height="827">
           </div>
@@ -193,16 +193,16 @@
     <img class="events__marawa events__marawa--left" src="assets/img/ornamen/asset1.webp" alt="" loading="lazy" width="800" height="571">
     <img class="events__marawa events__marawa--right" src="assets/img/ornamen/asset1.webp" alt="" loading="lazy" width="800" height="571">
     <div class="container reveal">
-      <h3 class="title title--light">Detail Acara</h3>
-      <p class="subtitle subtitle--light">Kami mengundang dengan penuh kebahagiaan</p>
+      <h3 class="title title--light" data-anim="down">Detail Acara</h3>
+      <p class="subtitle subtitle--light" data-anim="up">Kami mengundang dengan penuh kebahagiaan</p>
 
-      <div class="events__grid">
-        <article class="event">
+      <div class="events__grid" data-stagger="170">
+        <article class="event" data-anim="rise">
           <div class="event__thumb"><img src="assets/img/foto/akad.webp" alt="" loading="lazy" width="420" height="419"></div>
           <div class="event__body">
             <h4 class="event__title">Akad Nikah</h4>
             <ul class="event__list">
-              <li><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg>Minggu, 12 Oktober 2025</li>
+              <li><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg><span data-tanggal="lengkap">Senin, 12 Oktober 2026</span></li>
               <li><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg>08.00 WIB &ndash; Selesai</li>
               <li><svg viewBox="0 0 24 24"><use href="#ic-pin"/></svg>Masjid Raya Ganting, Padang</li>
             </ul>
@@ -212,12 +212,12 @@
           </div>
         </article>
 
-        <article class="event">
+        <article class="event" data-anim="rise">
           <div class="event__thumb"><img src="assets/img/foto/resepsi.webp" alt="" loading="lazy" width="420" height="412"></div>
           <div class="event__body">
             <h4 class="event__title">Resepsi / Baralek</h4>
             <ul class="event__list">
-              <li><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg>Minggu, 12 Oktober 2025</li>
+              <li><svg viewBox="0 0 24 24"><use href="#ic-calendar"/></svg><span data-tanggal="lengkap">Senin, 12 Oktober 2026</span></li>
               <li><svg viewBox="0 0 24 24"><use href="#ic-clock"/></svg>11.00 WIB &ndash; 15.00 WIB</li>
               <li><svg viewBox="0 0 24 24"><use href="#ic-pin"/></svg>Gedung Basko Padang</li>
             </ul>
@@ -235,22 +235,21 @@
   ========================================================== -->
   <section class="gallery band band--cream" id="galeri">
     <div class="container reveal">
-      <h3 class="title title--left">Galeri Foto</h3>
-      <p class="subtitle subtitle--left">Momen Indah Bersama</p>
-      <img class="ornamen-pembatas ornamen-pembatas--kiri" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
-
+      <h3 class="title title--left" data-anim="down">Galeri Foto</h3>
+      <p class="subtitle subtitle--left" data-anim="up">Momen Indah Bersama</p>
+      
       <div class="gallery__scroller">
         <button class="gallery__arrow gallery__arrow--prev" id="galPrev" type="button" aria-label="Foto sebelumnya"><svg viewBox="0 0 24 24"><use href="#ic-chev-left"/></svg></button>
-        <ul class="gallery__track" id="galleryTrack">
-          <li><button class="gallery__item" type="button" data-index="0"><img src="assets/img/foto/gallery-1.webp" alt="Yogi dan Ratna berdekatan dengan busana adat Minang" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="1"><img src="assets/img/foto/gallery-2.webp" alt="Ratna mengenakan suntiang emas" loading="lazy" width="325" height="496"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="2"><img src="assets/img/foto/gallery-3.webp" alt="Yogi dan Ratna beradu kening" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="3"><img src="assets/img/foto/gallery-4.webp" alt="Yogi dan Ratna duduk bersanding" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="4"><img src="assets/img/foto/gallery-5.webp" alt="Yogi mengenakan destar dan busana adat" loading="lazy" width="423" height="533"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="5"><img src="assets/img/foto/gallery-6.webp" alt="Yogi dan Ratna berdiri di depan rumah gadang" loading="lazy" width="498" height="332"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="6"><img src="assets/img/foto/gallery-7.webp" alt="Ratna berlatar hiasan bunga dan marawa" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="7"><img src="assets/img/foto/gallery-8.webp" alt="Yogi dan Ratna berlatar perbukitan Minangkabau" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="8"><img src="assets/img/foto/gallery-9.webp" alt="Ratna dalam balutan songket merah marun" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+        <ul class="gallery__track" id="galleryTrack" data-stagger="75">
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="0"><img src="assets/img/foto/gallery-1.webp" alt="Yogi dan Ratna berdekatan dengan busana adat Minang" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="1"><img src="assets/img/foto/gallery-2.webp" alt="Ratna mengenakan suntiang emas" loading="lazy" width="325" height="496"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="2"><img src="assets/img/foto/gallery-3.webp" alt="Yogi dan Ratna beradu kening" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="3"><img src="assets/img/foto/gallery-4.webp" alt="Yogi dan Ratna duduk bersanding" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="4"><img src="assets/img/foto/gallery-5.webp" alt="Yogi mengenakan destar dan busana adat" loading="lazy" width="423" height="533"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="5"><img src="assets/img/foto/gallery-6.webp" alt="Yogi dan Ratna berdiri di depan rumah gadang" loading="lazy" width="498" height="332"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="6"><img src="assets/img/foto/gallery-7.webp" alt="Ratna berlatar hiasan bunga dan marawa" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="7"><img src="assets/img/foto/gallery-8.webp" alt="Yogi dan Ratna berlatar perbukitan Minangkabau" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-anim="rise" data-index="8"><img src="assets/img/foto/gallery-9.webp" alt="Ratna dalam balutan songket merah marun" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
         </ul>
         <button class="gallery__arrow gallery__arrow--next" id="galNext" type="button" aria-label="Foto berikutnya"><svg viewBox="0 0 24 24"><use href="#ic-chev-right"/></svg></button>
       </div>
@@ -262,10 +261,10 @@
   ========================================================== -->
   <section class="rsvp band band--cream-alt" id="rsvp">
     <div class="container">
-      <div class="rsvp__grid">
+      <div class="rsvp__grid" data-stagger="160">
 
         <!-- Konfirmasi -->
-        <div class="card reveal">
+        <div class="card" data-anim="rise">
           <h4 class="card__title">Konfirmasi Kehadiran</h4>
           <p class="card__sub">Mohon isi form berikut untuk konfirmasi kehadiran Anda</p>
 
@@ -310,7 +309,7 @@
         </div>
 
         <!-- Ucapan -->
-        <div class="card reveal">
+        <div class="card" data-anim="rise">
           <h4 class="card__title">Ucapan &amp; Doa</h4>
           <p class="card__sub">Terima kasih atas doa dan ucapan baiknya</p>
           <ul class="wishes" id="wishList"></ul>
@@ -318,7 +317,7 @@
         </div>
 
         <!-- Amplop -->
-        <div class="card card--gift reveal">
+        <div class="card card--gift" data-anim="rise">
           <h4 class="card__title"><svg class="card__ico" viewBox="0 0 24 24"><use href="#ic-gift"/></svg>Amplop Digital / Kado</h4>
           <p class="card__sub">Doa terbaik Anda sudah cukup, namun jika ingin memberikan hadiah, berikut nomor rekening kami.</p>
 
@@ -353,13 +352,13 @@
   <footer class="closing band band--maroon">
     <div class="band__ornament" aria-hidden="true"></div>
     <div class="container container--narrow reveal">
-      <h3 class="title title--light">Terima Kasih</h3>
+      <h3 class="title title--light" data-anim="down">Terima Kasih</h3>
       <p class="closing__text">
         Atas kehadiran dan doa restu Bapak/Ibu/Saudara/i<br>
         semoga menjadi bagian dari kebahagiaan kami.
       </p>
       <p class="closing__motto">&ldquo;Adat Basandi Syarak, Syarak Basandi Kitabullah&rdquo;</p>
-      <img class="ornamen-pembatas" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
+      <img class="ornamen-pembatas" data-anim="wipe" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
       <p class="closing__credit">Created with <svg class="closing__heart" viewBox="0 0 24 24"><use href="#ic-heart"/></svg> by Yogi &amp; Ratna</p>
     </div>
   </footer>

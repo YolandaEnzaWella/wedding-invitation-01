@@ -10,7 +10,13 @@
      --------------------------------------------------------- */
   var CONFIG = {
     // Waktu akad (WIB = UTC+7). Format: YYYY-MM-DDTHH:mm:ss+07:00
-    eventDate: '2025-10-12T08:00:00+07:00',
+    //
+    // INI SATU-SATUNYA TEMPAT MENGUBAH TANGGAL. Semua tanggal yang tampil di
+    // halaman — termasuk nama harinya — dihitung dari sini, jadi tidak mungkin
+    // tertulis "Minggu" padahal tanggalnya jatuh di hari Senin. Yang perlu
+    // disunting manual hanyalah <title> dan tag meta di index.html, karena
+    // keduanya dibaca sebelum JavaScript sempat berjalan.
+    eventDate: '2026-10-12T08:00:00+07:00',
     // Nama tamu default bila tidak ada parameter ?to= di URL
     defaultGuest: 'Tamu Undangan',
     // Kunci penyimpanan ucapan di browser (dipakai saat Firebase belum diisi)
@@ -78,6 +84,52 @@
     } else if (el) {
       el.textContent = CONFIG.defaultGuest;
     }
+  })();
+
+  /* ---------------------------------------------------------
+     1b. TANGGAL DI HALAMAN, DIHITUNG DARI CONFIG
+     --------------------------------------------------------- */
+  (function tanggal() {
+    var d = new Date(CONFIG.eventDate);
+    if (isNaN(d)) return;
+
+    // Acara berlangsung di WIB. Kalau tanggal dirangkai memakai zona waktu
+    // perangkat tamu, tamu di zona lain bisa melihat tanggal yang meleset
+    // sehari — karena itu semuanya dipaksa ke Asia/Jakarta.
+    var zona = { timeZone: 'Asia/Jakarta' };
+    function format(opsi) {
+      var o = { timeZone: zona.timeZone };
+      for (var k in opsi) o[k] = opsi[k];
+      try {
+        return new Intl.DateTimeFormat('id-ID', o).format(d);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    var bentuk = {
+      // 12 . 10 . 2026
+      titik: function () {
+        var p = format({ day: '2-digit', month: '2-digit', year: 'numeric' });
+        return p ? p.replace(/[/\-.]/g, ' . ') : null;
+      },
+      // 12 Oktober 2026
+      panjang: function () {
+        return format({ day: 'numeric', month: 'long', year: 'numeric' });
+      },
+      // Senin, 12 Oktober 2026
+      lengkap: function () {
+        return format({ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      }
+    };
+
+    $$('[data-tanggal]').forEach(function (el) {
+      var fn = bentuk[el.getAttribute('data-tanggal')];
+      if (!fn) return;
+      var teks = fn();
+      // Bila Intl gagal, teks bawaan di HTML dibiarkan apa adanya.
+      if (teks) el.textContent = teks;
+    });
   })();
 
   /* ---------------------------------------------------------
@@ -180,21 +232,35 @@
       seconds: $('[data-cd="seconds"]', wrap)
     };
 
+    // Angka hanya dianimasikan saat nilainya benar-benar berubah. Kalau kelas
+    // animasi dipasang tiap detik ke keempat kotak, jam dan hari ikut berkedip
+    // padahal isinya sama — dan kedipan yang tak ada sebabnya justru terbaca
+    // sebagai gangguan, bukan gerak.
+    function setAngka(el, nilai) {
+      if (!el || el.textContent === nilai) return;
+      el.textContent = nilai;
+      el.classList.remove('is-tick');
+      // Paksa reflow agar animasi bisa diputar ulang dari awal.
+      void el.offsetWidth;
+      el.classList.add('is-tick');
+    }
+
     function tick() {
       var diff = target - Date.now();
 
       if (diff <= 0) {
         Object.keys(fields).forEach(function (k) { if (fields[k]) fields[k].textContent = '00'; });
         if (done) done.hidden = false;
+        wrap.classList.add('is-selesai');
         clearInterval(timer);
         return;
       }
 
       var s = Math.floor(diff / 1000);
-      if (fields.days)    fields.days.textContent    = pad(Math.floor(s / 86400));
-      if (fields.hours)   fields.hours.textContent   = pad(Math.floor(s % 86400 / 3600));
-      if (fields.minutes) fields.minutes.textContent = pad(Math.floor(s % 3600 / 60));
-      if (fields.seconds) fields.seconds.textContent = pad(s % 60);
+      setAngka(fields.days,    pad(Math.floor(s / 86400)));
+      setAngka(fields.hours,   pad(Math.floor(s % 86400 / 3600)));
+      setAngka(fields.minutes, pad(Math.floor(s % 3600 / 60)));
+      setAngka(fields.seconds, pad(s % 60));
     }
 
     tick();
@@ -204,27 +270,56 @@
   /* ---------------------------------------------------------
      5. ANIMASI SAAT DI-SCROLL
      --------------------------------------------------------- */
-  var revealEls = $$('.reveal');
+  var revealEls = $$('.reveal, [data-anim]');
+
+  // Jeda bertingkat. Nilai atribut data-stagger adalah jarak antar elemen
+  // dalam milidetik; anak langsung yang ber-data-anim mendapat kelipatannya.
+  $$('[data-stagger]').forEach(function (induk) {
+    var langkah = parseInt(induk.getAttribute('data-stagger'), 10);
+    if (!langkah) langkah = 90;
+    $$('[data-anim]', induk).forEach(function (el, i) {
+      el.style.setProperty('--d', (i * langkah) + 'ms');
+    });
+  });
+
+  function tampilkan(el) { el.classList.add('is-in'); }
 
   function revealAll() {
     revealEls.forEach(function (el) {
-      var top = el.getBoundingClientRect().top;
-      if (top < window.innerHeight * 0.92) el.classList.add('is-in');
+      if (el.getBoundingClientRect().top < window.innerHeight * 0.95) tampilkan(el);
     });
   }
 
   if ('IntersectionObserver' in window) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-in');
-          io.unobserve(entry.target);
-        }
+        if (!entry.isIntersecting) return;
+        tampilkan(entry.target);
+        // Sekali muncul, selesai. Tanpa unobserve, elemen akan beranimasi
+        // ulang tiap kali tamu menggulir naik-turun melewatinya.
+        io.unobserve(entry.target);
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
     revealEls.forEach(function (el) { io.observe(el); });
+
+    // Jaring pengaman untuk elemen yang terlewat pengamat. Gambar dan huruf
+    // web baru selesai dimuat setelah pengamat dipasang, dan pergeseran tata
+    // letak yang ditimbulkannya bisa membuat sebuah elemen tidak pernah
+    // tercatat melintasi ambang — elemen itu lalu tersangkut tak terlihat
+    // selamanya. Pemeriksaan posisi langsung tidak punya kelemahan itu.
+    var terakhir = 0;
+    window.addEventListener('scroll', function () {
+      var kini = Date.now();
+      if (kini - terakhir < 120) return;   // laju dibatasi lewat stempel waktu
+      terakhir = kini;
+      revealAll();
+    }, { passive: true });
+
+    // Sekali lagi setelah semua aset tuntas, untuk isi yang sudah terlihat
+    // sejak awal tetapi posisinya bergeser saat gambar mendapat ukurannya.
+    window.addEventListener('load', revealAll);
   } else {
-    revealEls.forEach(function (el) { el.classList.add('is-in'); });
+    revealEls.forEach(tampilkan);
   }
 
   /* ---------------------------------------------------------

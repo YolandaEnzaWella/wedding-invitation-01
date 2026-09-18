@@ -275,9 +275,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background-color: var(--maroon-800);
   color: var(--cream-100);
   overflow: hidden;
-  transition: transform 1s var(--ease), opacity .8s ease;
+  transition: transform 1s var(--ease), opacity .85s ease, filter .9s ease;
 }
-.cover.is-open { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 .cover.is-gone { display: none; }
 
 /* Nama mempelai berukuran besar, jadi kabutnya lebih pekat daripada di
@@ -296,11 +295,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   position: relative; z-index: 2;
   text-align: center;
   max-width: 560px;
-  animation: riseIn 1.1s var(--ease) both;
-}
-@keyframes riseIn {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: none; }
 }
 
 .cover__crown {
@@ -1007,13 +1001,119 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
 
-/* ---------- 20. ANIMASI SCROLL ---------- */
-.reveal {
+/* ---------- 20. ANIMASI ----------
+   Satu transisi dipakai bersama; yang berbeda hanya bentuk awal tiap elemen.
+   Jeda diatur lewat --d yang diisi JavaScript, sehingga elemen dalam satu
+   bagian datang berurutan dan terbaca sebagai satu gerakan — bukan sekumpulan
+   blok yang muncul serentak. */
+.reveal, [data-anim] {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity .8s var(--ease), transform .8s var(--ease);
+  transition:
+    opacity .85s var(--ease),
+    transform .95s var(--ease),
+    filter .85s var(--ease),
+    letter-spacing .95s var(--ease),
+    clip-path 1s var(--ease);
+  transition-delay: var(--d, 0ms);
 }
-.reveal.is-in { opacity: 1; transform: none; }
+
+.reveal,
+[data-anim="up"]    { transform: translateY(34px); }
+[data-anim="down"]  { transform: translateY(-26px); }
+[data-anim="left"]  { transform: translateX(-54px) rotate(-1.2deg); }
+[data-anim="right"] { transform: translateX(54px) rotate(1.2deg); }
+[data-anim="zoom"]  { transform: scale(.8); filter: blur(6px); }
+[data-anim="drop"]  { transform: translateY(-26px) scale(.88); }
+[data-anim="rise"]  { transform: translateY(46px) scale(.97); filter: blur(5px); }
+/* Pembatas dibuka dari tengah ke dua sisi, mengikuti bentuknya yang simetris */
+[data-anim="wipe"]  { clip-path: inset(0 50% 0 50%); transform: scaleY(.6); }
+
+/* Judul merapat pelan dari huruf yang renggang — gerak kecil yang membuat
+   judul terasa "mendarat", bukan sekadar muncul. */
+.title[data-anim] { letter-spacing: .22em; }
+
+.reveal.is-in,
+[data-anim].is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  clip-path: inset(0 0 0 0);
+}
+.title[data-anim].is-in { letter-spacing: .01em; }
+
+/* Kedua mempelai datang bersamaan dari kiri dan kanan — kalau diberi jeda
+   berurutan, yang satu terasa lebih utama daripada yang lain. Ampersand-nya
+   menyusul, seolah keduanya bertemu di tengah. */
+.couple__amp[data-anim] { --d: 300ms; }
+
+/* ---- Cover: tiap baris masuk berurutan ---- */
+@keyframes coverMasuk {
+  from { opacity: 0; transform: translateY(30px) scale(.97); filter: blur(7px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+@keyframes suntiangTurun {
+  0%   { opacity: 0; transform: translateY(-54px) scale(.62) rotate(-6deg); filter: blur(10px); }
+  60%  { opacity: 1; transform: translateY(6px) scale(1.04) rotate(1.5deg); filter: none; }
+  100% { transform: none; }
+}
+@keyframes suntiangBersinar {
+  0%, 100% { filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45)); }
+  50%      { filter: drop-shadow(0 8px 30px rgba(201, 165, 92, .55)); }
+}
+@keyframes denyut {
+  0%   { box-shadow: 0 0 0 0 rgba(201, 165, 92, .5); }
+  70%  { box-shadow: 0 0 0 18px rgba(201, 165, 92, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(201, 165, 92, 0); }
+}
+
+.cover__inner > * { animation: coverMasuk 1s var(--ease) both; }
+.cover__inner > *:nth-child(1) { animation-delay: .10s; }
+.cover__inner > *:nth-child(2) { animation-delay: .34s; }
+.cover__inner > *:nth-child(3) { animation-delay: .46s; }
+.cover__inner > *:nth-child(4) { animation-delay: .62s; }
+.cover__inner > *:nth-child(5) { animation-delay: .74s; }
+.cover__inner > *:nth-child(6) { animation-delay: .86s; }
+.cover__inner > *:nth-child(7) { animation-delay: .98s; }
+
+/* Ditulis setelah aturan di atas supaya menang, sebab bobot pemilihnya sama */
+.cover__crown {
+  animation:
+    suntiangTurun 1.25s var(--ease) both,
+    suntiangBersinar 4.5s ease-in-out 1.5s infinite;
+}
+
+/* Cincin denyut pada tombol buka — mengarahkan mata tamu ke satu-satunya
+   hal yang perlu ditekan di layar pertama. */
+.cover__open { position: relative; }
+.cover__open::after {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: 999px;
+  pointer-events: none;
+  animation: denyut 3s ease-out 2.2s infinite;
+}
+
+/* ---- Cover keluar: seperti melangkah masuk melewati gerbang ---- */
+.cover.is-open {
+  transform: scale(1.16);
+  opacity: 0;
+  filter: blur(12px);
+  pointer-events: none;
+}
+
+/* ---- Hitung mundur: angka berganti ---- */
+.cd { perspective: 460px; }
+.cd__num { transform-origin: 50% 0%; }
+@keyframes angkaBerganti {
+  0%   { opacity: 0; transform: translateY(-48%) rotateX(56deg); }
+  55%  { opacity: 1; transform: translateY(5%) rotateX(-9deg); }
+  100% { transform: none; }
+}
+.cd__num.is-tick { animation: angkaBerganti .5s var(--ease); }
+
+/* Kotak detik diberi sorot tipis supaya jelas ada yang berdetak */
+.countdown__grid .cd:last-child { border-color: var(--gold-300); }
+.countdown__grid.is-selesai .cd { opacity: .55; }
 
 /* ---------- 21. RESPONSIF ---------- */
 @media (max-width: 860px) {

@@ -33,15 +33,26 @@ Lalu buka `http://localhost:8000`.
 
 ### Tanggal dan hitung mundur
 
-Buka `assets/js/main.js`, ubah objek `CONFIG` di bagian paling atas:
+Ubah **satu baris** di `assets/js/main.js`:
 
 ```js
 var CONFIG = {
-  eventDate: '2025-10-12T08:00:00+07:00',  // waktu akad, WIB
-  defaultGuest: 'Tamu Undangan',
+  eventDate: '2026-10-12T08:00:00+07:00',  // waktu akad, WIB
   ...
 };
 ```
+
+Semua tanggal yang tampil di halaman dihitung dari sini — termasuk nama
+harinya, sehingga tidak mungkin tertulis "Minggu" padahal tanggalnya jatuh di
+hari Senin. Tanggalnya juga dipaksa ke zona `Asia/Jakarta`, supaya tamu yang
+sedang di luar negeri tidak melihat tanggal yang meleset sehari.
+
+Yang masih perlu disunting manual hanya `<title>` dan tag `meta` di
+`index.html`, karena keduanya dibaca sebelum JavaScript sempat berjalan.
+
+> Tanggal bawaannya **12 Oktober 2026**. Aslinya desain menyebut 2025, tapi
+> tanggal itu sudah lewat sehingga hitung mundurnya langsung berhenti di nol.
+> Ganti ke tanggal Anda yang sebenarnya.
 
 ### Nama, orang tua, lokasi, rekening
 
