@@ -567,28 +567,28 @@
         posisiAwal = posisiSekarang();
         jalan.pause();
         wadah.classList.add('is-ditarik');
-        wadah.setPointerCapture(e.pointerId);
       });
 
-      wadah.addEventListener('pointermove', function (e) {
+      // Pendengarnya dipasang di window, dan setPointerCapture sengaja TIDAK
+      // dipakai. Menangkap pointer akan memindahkan sasaran peristiwa klik ke
+      // wadahnya, sehingga ketukan tidak pernah sampai ke tombol fotonya dan
+      // lightbox tidak akan pernah terbuka. Lewat window, tarikan tetap
+      // terlacak walau jari keluar dari area galeri, tanpa efek samping itu.
+      window.addEventListener('pointermove', function (e) {
         if (!menarik) return;
         var geser = e.clientX - xAwal;
         jarakTarik = Math.max(jarakTarik, Math.abs(geser));
         pindahKe(posisiAwal - geser);
       });
 
-      function lepas(e) {
+      function lepas() {
         if (!menarik) return;
         menarik = false;
         wadah.classList.remove('is-ditarik');
-        if (e && e.pointerId != null && wadah.releasePointerCapture) {
-          try { wadah.releasePointerCapture(e.pointerId); } catch (err) { /* sudah lepas */ }
-        }
         if (!kurangiGerak) jalan.play();
       }
-      wadah.addEventListener('pointerup', lepas);
-      wadah.addEventListener('pointercancel', lepas);
-      wadah.addEventListener('pointerleave', lepas);
+      window.addEventListener('pointerup', lepas);
+      window.addEventListener('pointercancel', lepas);
 
       // Tarikan tidak boleh berakhir dengan membuka lightbox. Ditahan di fase
       // menangkap supaya pendengar klik pada tombolnya tidak pernah terpanggil.

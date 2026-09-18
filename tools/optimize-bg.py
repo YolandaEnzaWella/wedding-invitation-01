@@ -86,13 +86,19 @@ def _luruhkan(pita, dari_bawah):
     return pita
 
 
-def buat_tengah(im, stem, out_dir):
+# Seberapa kuat pita tengah tampil dibanding warna pengisinya. Dipasang
+# rendah dengan sengaja: pada nilai penuh, ornamen tepi yang terbawa di
+# potongan itu berulang tegak dan membentuk deret zigzag yang bersaing dengan
+# bingkai asli di pita atas dan bawah — dua bingkai bertumpuk di satu layar.
+# Serendah ini ia hanya mengisi ruang sebagai tekstur samar.
+KEKUATAN_TENGAH = 0.30
+
+
+def buat_tengah(im, stem, out_dir, warna_isi):
     """Pita tengah yang diulang menutupi ruang di antara pita atas dan bawah.
 
     Warna rata saja tidak cukup: pada cover yang setinggi layar, ruang itu
-    mencapai dua pertiga halaman dan terbaca sebagai bidang kosong. Pita ini
-    membawa ornamen tepi kiri-kanan yang memang berjalan tegak lurus di
-    bagian tengah gambar, jadi ruangnya terisi ornamen sungguhan.
+    mencapai dua pertiga halaman dan terbaca sebagai bidang kosong.
 
     Potongannya dicerminkan lalu disambung. Cerminan membuat baris pertama
     dan baris terakhir tile menjadi sama, sehingga pengulangannya tidak
@@ -109,6 +115,11 @@ def buat_tengah(im, stem, out_dir):
     tile = Image.new("RGB", (lebar, potongan.height * 2))
     tile.paste(potongan, (0, 0))
     tile.paste(cermin, (0, potongan.height))
+
+    # Dicampur ke warna pengisi supaya ornamennya meredup jadi tekstur
+    rgb = tuple(int(warna_isi[i:i + 2], 16) for i in (1, 3, 5))
+    dasar = Image.new("RGB", tile.size, rgb)
+    tile = Image.blend(dasar, tile, KEKUATAN_TENGAH)
 
     dest = os.path.join(out_dir, f"{stem}-mid.webp")
     tile.save(dest, "WEBP", quality=KUALITAS_PITA, method=6)
@@ -179,13 +190,13 @@ def main():
                       + f"{lw:>5} x {lh:<5}"
                       + f"{size / 1024:>8.0f} KB")
 
-            nama_mid, mw, mh, msize = buat_tengah(im, stem, OUT)
+            warna[stem] = warna_tengah(im)
+
+            nama_mid, mw, mh, msize = buat_tengah(im, stem, OUT, warna[stem])
             total_out += msize
             print(f"{nama_mid}".ljust(18)
                   + f"{mw:>5} x {mh:<5}"
                   + f"{msize / 1024:>8.0f} KB")
-
-            warna[stem] = warna_tengah(im)
 
     print("-" * 48)
     print(f"Sumber : {total_src / 1024 / 1024:.1f} MB")
