@@ -75,23 +75,64 @@ https://contoh.com/undangan/?to=Bapak%20Ahmad%20Sekeluarga
 
 Parameter `?kepada=` dan `?nama=` juga berfungsi sama.
 
+## Ucapan & RSVP yang dinamis (Firebase)
+
+Undangan ini punya dua mode, dan berpindah sendiri:
+
+| Kondisi | Yang terjadi |
+| --- | --- |
+| `firebase-config.js` masih kosong | Ucapan disimpan di browser tamu masing-masing (`localStorage`). Anda tidak menerima datanya. |
+| Config sudah diisi | Ucapan tersimpan di Firestore, muncul **real-time** di semua perangkat tanpa muat ulang. |
+
+Kalau Firestore tidak merespons dalam 8 detik (salah config, offline, diblokir
+jaringan), halaman otomatis kembali ke mode lokal supaya bagian ucapan tidak
+terlihat rusak di mata tamu.
+
+### Langkah pemasangan
+
+1. Buka [console.firebase.google.com](https://console.firebase.google.com) → **Add project**.
+2. Setelah project jadi, klik ikon web **`</>`** untuk menambah aplikasi web.
+3. Salin objek `firebaseConfig` yang ditampilkan ke `assets/js/firebase-config.js`.
+4. Menu kiri → **Build → Firestore Database → Create database**.
+   Pilih mode **production**, lokasi **asia-southeast2 (Jakarta)**.
+5. Buka tab **Rules**, tempel seluruh isi [`firestore.rules`](firestore.rules), lalu **Publish**.
+
+Selesai. Ucapan masuk ke koleksi `wishes` dan bisa Anda baca kapan saja lewat
+Firebase Console.
+
+### Soal keamanan
+
+`apiKey` Firebase memang tampil di kode dan aman dilihat siapa pun — itu
+pengenal project, bukan kata sandi. Yang benar-benar melindungi data adalah
+`firestore.rules`, yang mengatur:
+
+- siapa pun boleh membaca dan menambah ucapan (memang begitu sifat buku tamu);
+- tidak ada yang boleh mengubah atau menghapus ucapan — termasuk miliknya sendiri;
+- panjang nama dan pesan dibatasi, dan waktunya memakai jam server agar tidak bisa dipalsukan;
+- koleksi lain di project Anda tertutup rapat.
+
+Di sisi halaman, ada jeda 20 detik antar pengiriman dari satu perangkat sebagai
+penahan spam sederhana. Untuk menghapus ucapan yang tidak pantas, hapus
+dokumennya lewat Firebase Console.
+
 ## Catatan teknis
 
-- **Data RSVP tersimpan di browser tamu** (`localStorage`), bukan di server.
-  Artinya ucapan yang dikirim seorang tamu hanya terlihat di perangkatnya
-  sendiri. Untuk mengumpulkan RSVP sungguhan, hubungkan form ke layanan seperti
-  Google Forms, Formspree, atau Firebase.
 - Mendukung `prefers-reduced-motion` dan memiliki gaya cetak sederhana.
 - Responsif hingga lebar layar 380 px.
+- Input tamu di-escape sebelum dirender, jadi HTML atau skrip yang diketik
+  di form tampil sebagai teks biasa.
 
 ## Struktur berkas
 
 ```
 .
 ├── index.html
+├── firestore.rules              aturan keamanan Firebase
 ├── assets/
 │   ├── css/style.css
-│   ├── js/main.js
+│   ├── js/
+│   │   ├── firebase-config.js   isi config Firebase di sini
+│   │   └── main.js
 │   ├── img/
 │   └── audio/
 └── README.md

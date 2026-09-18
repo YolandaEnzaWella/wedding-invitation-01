@@ -1,0 +1,58 @@
+rules_version = '2';
+
+// Aturan keamanan untuk buku tamu undangan pernikahan.
+//
+// Cara pasang:
+//   Firebase Console → Build → Firestore Database → tab Rules
+//   → tempelkan seluruh isi berkas ini → Publish
+//
+// Ringkasnya:
+//   - siapa pun boleh MEMBACA ucapan (undangan memang untuk umum)
+//   - siapa pun boleh MENAMBAH ucapan, tapi isinya divalidasi ketat
+//   - tidak ada yang boleh MENGUBAH atau MENGHAPUS ucapan orang lain
+//     (termasuk ucapannya sendiri) — penghapusan hanya lewat Console
+//   - koleksi lain tertutup rapat
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /wishes/{wishId} {
+      allow read: if true;
+
+      allow create: if isValidWish(request.resource.data);
+
+      allow update, delete: if false;
+    }
+
+    // Selain koleksi di atas, semuanya ditolak.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+function isValidWish(d) {
+  return d.keys().hasOnly(['name', 'message', 'attend', 'count', 'ts'])
+      && d.keys().hasAll(['name', 'message', 'attend', 'count', 'ts'])
+
+      // Nama: 2–60 karakter
+      && d.name is string
+      && d.name.size() >= 2
+      && d.name.size() <= 60
+
+      // Pesan: maksimal 400 karakter, boleh kosong
+      && d.message is string
+      && d.message.size() <= 400
+
+      // Status kehadiran hanya dua nilai yang dikenal
+      && d.attend is string
+      && (d.attend == 'Hadir' || d.attend == 'Tidak Hadir')
+
+      // Jumlah tamu: teks pendek ('', '1'..'4', '5+')
+      && d.count is string
+      && d.count.size() <= 3
+
+      // Waktu wajib memakai jam server, bukan jam perangkat tamu.
+      // Ini mencegah ucapan dipalsukan tanggalnya agar naik ke atas.
+      && d.ts == request.time;
+}

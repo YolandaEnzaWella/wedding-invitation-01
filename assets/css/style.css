@@ -824,6 +824,18 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .wish__badge--hadir { background: rgba(91, 18, 32, .08); color: var(--maroon-600); border-color: rgba(91, 18, 32, .2); }
 .wishes__count { margin-top: 12px; font-size: 11.5px; color: var(--ink-500); text-align: center; }
+.wishes__empty {
+  padding: 22px 14px;
+  border: 1px dashed var(--cream-300);
+  border-radius: 12px;
+  background: var(--cream-100);
+  font-size: 12.5px;
+  color: var(--ink-500);
+  text-align: center;
+}
+
+/* Tombol kirim saat proses pengiriman berlangsung */
+.btn:disabled { opacity: .6; cursor: progress; transform: none; }
 
 /* Amplop */
 .card--gift { background: linear-gradient(170deg, var(--cream-50), var(--cream-100)); }

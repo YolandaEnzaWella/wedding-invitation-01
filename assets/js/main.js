@@ -13,8 +13,16 @@
     eventDate: '2025-10-12T08:00:00+07:00',
     // Nama tamu default bila tidak ada parameter ?to= di URL
     defaultGuest: 'Tamu Undangan',
-    // Kunci penyimpanan ucapan di browser
+    // Kunci penyimpanan ucapan di browser (dipakai saat Firebase belum diisi)
     storageKey: 'wedding_wishes_yogi_ratna',
+    // Jeda minimal antar pengiriman dari satu perangkat, dalam detik
+    cooldown: 20,
+    // Jumlah ucapan terbaru yang ditampilkan
+    wishLimit: 200,
+    // Versi SDK Firebase yang dimuat dari CDN resmi Google
+    firebaseVersion: '10.13.0',
+    // Berapa detik menunggu Firestore sebelum beralih ke penyimpanan lokal
+    firestoreTimeout: 8,
     // Ucapan bawaan yang tampil saat pertama kali dibuka
     seedWishes: [
       { name: 'Siti Nurhaliza', message: 'Selamat menempuh hidup baru, semoga selalu bahagia. Aamiin 🤲', attend: 'Hadir', ts: Date.now() - 2 * 3600e3 },
@@ -353,8 +361,9 @@
     var note = $('#formNote');
     if (!form || !list) return;
 
-    var wishes = store.get(CONFIG.storageKey, null);
-    if (!Array.isArray(wishes)) wishes = CONFIG.seedWishes.slice();
+    var wishes = [];
+    var backend = null;     // diisi bila Firestore berhasil tersambung
+    var loading = false;    // true selama menunggu balasan pertama Firestore
 
     function timeAgo(ts) {
       var s = Math.floor((Date.now() - ts) / 1000);
@@ -374,6 +383,14 @@
     }
 
     function render() {
+      if (!wishes.length) {
+        list.innerHTML = '<li class="wishes__empty">' +
+          (loading ? 'Memuat ucapan…' : 'Belum ada ucapan. Jadilah yang pertama 🤲') +
+          '</li>';
+        if (counter) counter.textContent = '';
+        return;
+      }
+
       list.innerHTML = wishes.map(function (w) {
         var hadir = w.attend === 'Hadir';
         return '<li class="wish">' +
@@ -395,6 +412,121 @@
       }
     }
 
+    /* ---- Cadangan: localStorage (dipakai bila Firebase belum diisi) ---- */
+    var localBackend = {
+      name: 'lokal',
+      start: function () {
+        loading = false;
+        var saved = store.get(CONFIG.storageKey, null);
+        wishes = Array.isArray(saved) ? saved : CONFIG.seedWishes.slice();
+        render();
+      },
+      add: function (wish) {
+        wishes.unshift(wish);
+        var ok = store.set(CONFIG.storageKey, wishes);
+        render();
+        return Promise.resolve(ok
+          ? ''
+          : 'Browser memblokir penyimpanan, jadi ucapan hilang saat halaman dimuat ulang.');
+      }
+    };
+
+    /* ---- Firestore: ucapan tampil langsung di semua perangkat ---- */
+
+    // Dibungkus new Function agar browser lama yang belum mengenal import()
+    // tidak menggagalkan seluruh berkas ini saat mem-parsing.
+    var dynImport = null;
+    try { dynImport = new Function('u', 'return import(u);'); } catch (e) { dynImport = null; }
+
+    function firebaseReady() {
+      var cfg = window.FIREBASE_CONFIG;
+      return !!(dynImport && cfg && cfg.apiKey && cfg.projectId);
+    }
+
+    function startFirestore() {
+      var cfg = window.FIREBASE_CONFIG;
+      var base = 'https://www.gstatic.com/firebasejs/' + CONFIG.firebaseVersion + '/';
+
+      return Promise.all([
+        dynImport(base + 'firebase-app.js'),
+        dynImport(base + 'firebase-firestore.js')
+      ]).then(function (mods) {
+        var fbApp = mods[0], fs = mods[1];
+        var db = fs.getFirestore(fbApp.initializeApp(cfg));
+        var col = fs.collection(db, window.FIREBASE_COLLECTION || 'wishes');
+
+        // Firestore yang sehat selalu membalas — walau koleksinya masih kosong.
+        // Jadi "tidak ada balasan sama sekali" berarti sambungan bermasalah,
+        // bukan buku tamu yang masih kosong. Dua hal itu harus dibedakan,
+        // supaya tamu tidak terpaku pada daftar kosong yang tak kunjung terisi.
+        var answered = false;
+
+        // Dengarkan perubahan: ucapan tamu lain muncul tanpa perlu muat ulang.
+        fs.onSnapshot(
+          fs.query(col, fs.orderBy('ts', 'desc'), fs.limit(CONFIG.wishLimit)),
+          function (snap) {
+            answered = true;
+            loading = false;
+            var arr = [];
+            snap.forEach(function (doc) {
+              var d = doc.data();
+              arr.push({
+                name: d.name,
+                message: d.message,
+                attend: d.attend,
+                count: d.count,
+                // serverTimestamp belum terisi pada pantulan pertama → pakai jam lokal
+                ts: d.ts && d.ts.toMillis ? d.ts.toMillis() : Date.now()
+              });
+            });
+            wishes = arr;
+            render();
+          },
+          function (err) {
+            answered = true;
+            console.warn('[undangan] gagal membaca ucapan:', err && err.code);
+            if (!wishes.length) localBackend.start();
+          }
+        );
+
+        // Firestore diam saja (project tidak ada, offline, diblokir jaringan):
+        // tampilkan cadangan lokal agar bagian ucapan tidak terlihat rusak.
+        setTimeout(function () {
+          if (!answered) {
+            console.warn('[undangan] Firestore tidak merespons, memakai penyimpanan lokal.');
+            localBackend.start();
+          }
+        }, CONFIG.firestoreTimeout * 1000);
+
+        backend = {
+          name: 'firestore',
+          add: function (wish) {
+            return fs.addDoc(col, {
+              name: wish.name,
+              message: wish.message,
+              attend: wish.attend,
+              count: wish.count || '',
+              ts: fs.serverTimestamp()
+            }).then(function () { return ''; });
+          }
+        };
+      });
+    }
+
+    /* ---- Batas kirim per perangkat, penahan spam sederhana ---- */
+    function cooldownLeft() {
+      var last = store.get('wedding_last_sent', 0);
+      var left = CONFIG.cooldown - Math.floor((Date.now() - last) / 1000);
+      return left > 0 ? left : 0;
+    }
+
+    function say(msg, isError) {
+      if (!note) return;
+      note.textContent = msg;
+      note.classList.toggle('is-error', !!isError);
+    }
+
+    /* ---- Pengiriman ---- */
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -404,34 +536,58 @@
       var count = form.elements.count.value;
 
       if (name.length < 2) {
-        if (note) { note.textContent = 'Mohon isi nama lengkap Anda.'; note.classList.add('is-error'); }
+        say('Mohon isi nama lengkap Anda.', true);
         form.elements.name.focus();
         return;
       }
 
-      wishes.unshift({
-        name: name,
-        message: message || 'Selamat menempuh hidup baru!',
+      var wait = cooldownLeft();
+      if (wait) {
+        say('Mohon tunggu ' + wait + ' detik sebelum mengirim lagi.', true);
+        return;
+      }
+
+      var submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      say('Mengirim…');
+
+      var wish = {
+        name: name.slice(0, 60),
+        message: (message || 'Selamat menempuh hidup baru!').slice(0, 400),
         attend: attend,
         count: count,
         ts: Date.now()
-      });
+      };
 
-      var saved = store.set(CONFIG.storageKey, wishes);
-      render();
-      form.reset();
-
-      if (note) {
-        note.classList.remove('is-error');
-        note.textContent = saved
-          ? 'Terima kasih, ' + name + '. Konfirmasi Anda sudah kami terima.'
-          : 'Terima kasih, ' + name + '. (Catatan: browser memblokir penyimpanan, ucapan hilang saat halaman dimuat ulang.)';
-      }
-      toast('Konfirmasi terkirim. Terima kasih!');
-      list.scrollTop = 0;
+      (backend || localBackend).add(wish)
+        .then(function (warning) {
+          store.set('wedding_last_sent', Date.now());
+          form.reset();
+          say('Terima kasih, ' + name + '. Konfirmasi Anda sudah kami terima.'
+              + (warning ? ' (' + warning + ')' : ''));
+          toast('Konfirmasi terkirim. Terima kasih!');
+          list.scrollTop = 0;
+        })
+        .catch(function (err) {
+          console.warn('[undangan] gagal mengirim ucapan:', err && err.code);
+          say('Maaf, ucapan gagal terkirim. Periksa koneksi lalu coba lagi.', true);
+        })
+        .then(function () {
+          if (submitBtn) submitBtn.disabled = false;
+        });
     });
 
-    render();
+    /* ---- Mulai ---- */
+    if (firebaseReady()) {
+      loading = true;
+      render();
+      startFirestore().catch(function (err) {
+        console.warn('[undangan] Firebase gagal dimuat, memakai penyimpanan lokal:', err);
+        localBackend.start();
+      });
+    } else {
+      localBackend.start();
+    }
   })();
 
   /* ---------------------------------------------------------
