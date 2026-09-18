@@ -1,4 +1,4 @@
-/* =========================================================
+﻿/* =========================================================
    Undangan Pernikahan — Yogi & Ratna
    Tema: Minangkabau (maroon, emas, krem songket)
    ========================================================= */
@@ -297,11 +297,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
   max-width: 560px;
 }
 
+/* Rumah gadang Koto Gadang: jauh lebih lebar daripada tinggi, jadi ukurannya
+   dipatok dari lebar layar dan dibiarkan pendek. */
 .cover__crown {
   display: block;
-  width: clamp(150px, 34vw, 240px);
+  width: clamp(230px, 58vw, 360px);
   height: auto;
-  margin: 0 auto 2px;
+  margin: 0 auto 6px;
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45));
 }
 
@@ -1051,12 +1053,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
   from { opacity: 0; transform: translateY(30px) scale(.97); filter: blur(7px); }
   to   { opacity: 1; transform: none; filter: none; }
 }
-@keyframes suntiangTurun {
+/* Ornamen cover jatuh dari atas lalu mendarat dengan sedikit pantulan */
+@keyframes ornamenTurun {
   0%   { opacity: 0; transform: translateY(-54px) scale(.62) rotate(-6deg); filter: blur(10px); }
   60%  { opacity: 1; transform: translateY(6px) scale(1.04) rotate(1.5deg); filter: none; }
   100% { transform: none; }
 }
-@keyframes suntiangBersinar {
+@keyframes ornamenBersinar {
   0%, 100% { filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45)); }
   50%      { filter: drop-shadow(0 8px 30px rgba(201, 165, 92, .55)); }
 }
@@ -1078,8 +1081,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Ditulis setelah aturan di atas supaya menang, sebab bobot pemilihnya sama */
 .cover__crown {
   animation:
-    suntiangTurun 1.25s var(--ease) both,
-    suntiangBersinar 4.5s ease-in-out 1.5s infinite;
+    ornamenTurun 1.25s var(--ease) both,
+    ornamenBersinar 4.5s ease-in-out 1.5s infinite;
 }
 
 /* Cincin denyut pada tombol buka — mengarahkan mata tamu ke satu-satunya
@@ -1122,9 +1125,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .person--rev { flex-direction: row; text-align: left; }
 }
 
-/* Layar kecil memakai berkas latar versi 820px: seperempat ukuran unduhan,
-   dan pada lebar segitu mata tidak bisa membedakan hasilnya. */
-@media (max-width: 860px) {
+/* Layar kecil melintang tetap memakai gambar utuh versi 820px — di sana
+   bentuk layarnya masih sebangun dengan gambarnya yang 3:2. */
+@media (max-width: 860px) and (orientation: landscape) {
   .cover     { background-image: url("../img/bg/bg2-sm.webp"); }
   .hero      { background-image: url("../img/bg/bg1-sm.webp"); }
   .countdown { background-image: url("../img/bg/bg3-sm.webp"); }
@@ -1134,6 +1137,64 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .gallery   { background-image: url("../img/bg/bg6-sm.webp"); }
   .rsvp      { background-image: url("../img/bg/bg4-sm.webp"); }
   .closing   { background-image: url("../img/bg/bg2-sm.webp"); }
+}
+
+/* ---------- LATAR DI LAYAR TEGAK ----------
+   Di ponsel tinggi tiap bagian berbeda jauh: Hitung Mundur berbanding 0,85
+   sedangkan RSVP sampai 0,27. Dengan `cover`, satu-satunya cara gambar 3:2
+   menutupi bagian yang tinggi adalah diperbesar sampai sisi kiri-kanannya
+   terpotong habis dan pikselnya melar — dan tidak ada satu rasio gambar pun
+   yang cocok untuk semua bagian sekaligus.
+
+   Karena itu gambarnya dipecah: pita atas menempel di tepi atas, pita bawah
+   di tepi bawah, keduanya selebar penuh, dan ruang di antaranya diisi warna
+   yang diambil dari bagian tengah gambar aslinya. Hasilnya ornamen tepi utuh
+   tanpa terpotong, dan karena `100% auto` tidak pernah membesarkan gambar
+   melebihi lebar layar, ketajamannya terjaga berapa pun tinggi bagiannya. */
+@media (max-width: 860px) and (orientation: portrait) {
+  .cover, .hero,
+  .countdown, .verse, .couple, .events, .gallery, .rsvp, .closing {
+    background-position: top center, bottom center;
+    background-size: 100% auto, 100% auto;
+    background-repeat: no-repeat, no-repeat;
+  }
+
+  .cover {
+    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
+    background-color: #400906;
+  }
+  .hero {
+    background-image: url("../img/bg/bg1-top.webp"), url("../img/bg/bg1-bot.webp");
+    background-color: #F2E1CB;
+  }
+  .countdown {
+    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp");
+    background-color: #410707;
+  }
+  .verse {
+    background-image: url("../img/bg/bg7-top.webp"), url("../img/bg/bg7-bot.webp");
+    background-color: #F3E4D0;
+  }
+  .couple {
+    background-image: url("../img/bg/bg5-top.webp"), url("../img/bg/bg5-bot.webp");
+    background-color: #F3E3CE;
+  }
+  .events {
+    background-image: url("../img/bg/bg8-top.webp"), url("../img/bg/bg8-bot.webp");
+    background-color: #3A0202;
+  }
+  .gallery {
+    background-image: url("../img/bg/bg6-top.webp"), url("../img/bg/bg6-bot.webp");
+    background-color: #F2E0C7;
+  }
+  .rsvp {
+    background-image: url("../img/bg/bg4-top.webp"), url("../img/bg/bg4-bot.webp");
+    background-color: #F5E7D3;
+  }
+  .closing {
+    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
+    background-color: #400906;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1150,19 +1211,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
      nav mengambang di tepi bawah layar dan akan menutupi baris terakhir. */
   .closing { padding-bottom: 104px; }
 
-  /* Kabut dipekatkan sedikit: pada gambar yang terpotong, bagian tengah bisa
-     kebagian ornamen padat yang membuat teks susah dibaca. */
+  /* Kabutnya justru ditipiskan dibanding layar besar. Di layar tegak bagian
+     tengahnya sudah rata warna, jadi teks terbaca tanpa dibantu; kabut tebal
+     malah akan memudarkan pita ornamen di tepi atas dan bawah. */
   .band--cream::before, .band--cream-alt::before, .hero::before {
-    background: radial-gradient(ellipse 96% 72% at 50% 48%,
-      rgba(253, 249, 240, .93) 0%,
-      rgba(253, 249, 240, .74) 62%,
-      rgba(253, 249, 240, .22) 100%);
+    background: radial-gradient(ellipse 98% 70% at 50% 50%,
+      rgba(253, 249, 240, .58) 0%,
+      rgba(253, 249, 240, .34) 62%,
+      rgba(253, 249, 240, 0) 100%);
   }
   .band--maroon::before, .cover::before {
-    background: radial-gradient(ellipse 96% 74% at 50% 48%,
-      rgba(59, 8, 16, .84) 0%,
-      rgba(59, 8, 16, .62) 62%,
-      rgba(59, 8, 16, .24) 100%);
+    background: radial-gradient(ellipse 98% 70% at 50% 50%,
+      rgba(59, 8, 16, .52) 0%,
+      rgba(59, 8, 16, .30) 62%,
+      rgba(59, 8, 16, 0) 100%);
   }
 
   .nav { top: auto; bottom: 14px; }

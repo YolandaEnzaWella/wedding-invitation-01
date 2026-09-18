@@ -100,10 +100,11 @@ Ornamen tempel ada di `assets/img/ornamen/`, hasil olahan `asset*.png`:
 | Berkas | Dipakai di |
 | --- | --- |
 | `asset1.webp` | Marawa sepasang di Detail Acara |
-| `asset2.webp` | Suntiang di atas nama, pada cover |
+| `asset2.webp` | Suntiang di atas judul Terima Kasih |
 | `asset3.webp` | Pembatas di bawah judul Hitung Mundur, Galeri, Terima Kasih |
 | `asset4.webp` | Sepasang burung di atas judul Mempelai |
 | `asset5.webp` | Lambang di atas ayat, dan sudut kartu Amplop Digital |
+| `asset6.webp` | Rumah gadang Koto Gadang di atas nama, pada cover |
 
 Marawa sengaja hanya dipasang di Detail Acara: latar bagian itu (`bg8`)
 satu-satunya yang tidak menggambarkan marawa, sehingga tidak terlihat dobel.
@@ -149,10 +150,37 @@ Skrip itu menghasilkan dua ukuran per gambar — 1536 px untuk layar besar dan
 ### Cara latar menyesuaikan layar
 
 Latarnya lanskap 3:2 dengan ornamen di keempat tepi dan ruang kosong di tengah.
-Di layar potret, `background-size: cover` memotong sisi kiri dan kanan — dan itu
-memang yang diinginkan, karena bagian paling khas (ornamen atas dan deretan
-rumah gadang di bawah) tetap utuh. Tiap bagian juga punya kabut radial di
-tengah supaya teks tetap terbaca tanpa meredam ornamen tepinya.
+Di layar lebar, `background-size: cover` bekerja baik karena bentuk layarnya
+sebangun dengan gambarnya.
+
+Di **layar tegak** ceritanya lain. Tinggi tiap bagian berbeda jauh — Hitung
+Mundur berbanding 1,08 sedangkan RSVP sampai 0,23. Dengan `cover`, satu-satunya
+cara gambar 3:2 menutupi bagian yang tinggi adalah diperbesar sampai sekitar
+77% lebarnya terpotong dan pikselnya melar. Tidak ada satu rasio gambar pun
+yang cocok untuk semua bagian sekaligus.
+
+Karena itu di layar tegak gambarnya dipecah jadi dua pita:
+
+```
+┌──────────────┐  ← bgN-top.webp, selebar penuh, menempel di tepi atas
+│              │
+│   isi teks   │  ← warna dari bagian tengah gambar aslinya
+│              │
+└──────────────┘  ← bgN-bot.webp, selebar penuh, menempel di tepi bawah
+```
+
+Hasilnya ornamen tepi utuh tanpa terpotong sama sekali, dan karena
+`background-size: 100% auto` tidak pernah membesarkan gambar melebihi lebar
+layar, ketajamannya terjaga berapa pun tinggi bagiannya. Pitanya juga jauh
+lebih ringan: 4–30 KB, dibanding 20–43 KB untuk gambar utuh versi kecil.
+
+Warna pengisi antara kedua pita dicetak oleh `tools/optimize-bg.py` setiap kali
+dijalankan — tinggal disalin ke blok `@media ... (orientation: portrait)` di
+`style.css`.
+
+Tiap bagian juga punya kabut radial di tengah supaya teks tetap terbaca. Di
+layar tegak kabutnya justru ditipiskan, karena bagian tengahnya sudah rata
+warna dan kabut tebal hanya akan memudarkan pita ornamennya.
 
 ### Musik
 
