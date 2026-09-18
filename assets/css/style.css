@@ -720,24 +720,28 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gallery__scroller {
   position: relative;
   margin-top: 4px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: auto;          /* jangan warisi gerak halus dari <html> */
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;          /* batangnya disembunyikan, bukan gulirnya */
-  -ms-overflow-style: none;
+  overflow: hidden;
+  /* Geser mendatar ditangani sendiri lewat pointer event; gulir tegak tetap
+     milik halaman supaya tamu tidak tersangkut saat menggulir ke bawah. */
+  touch-action: pan-y;
+  cursor: grab;
   /* Ujung kiri dan kanan memudar supaya foto tidak terpotong mendadak di tepi
      layar, melainkan seolah masuk dan keluar dari balik halaman. */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
-.gallery__scroller::-webkit-scrollbar { display: none; }
+.gallery__scroller.is-ditarik { cursor: grabbing; }
 
 .gallery__track {
   display: flex;
   gap: 14px;
   width: max-content;
   padding: 6px 0 14px;
+  /* Geraknya dijalankan lewat transform, bukan scrollLeft. scrollLeft
+     dibulatkan ke piksel bulat, sehingga laju pelan di bawah satu piksel per
+     frame hilang dan gerakannya tersendat. transform menerima pecahan dan
+     dijalankan compositor, jadi tetap halus. */
+  will-change: transform;
 }
 .gallery__track > li { flex: 0 0 auto; }
 

@@ -457,6 +457,18 @@
        pertama sudah bergeser habis; tanpa itu akan muncul ruang kosong
        panjang setiap kali putaran hendak mengulang. */
     (function jalankanGaleri() {
+      // Perbandingan sisi dipasang dari atribut width/height gambarnya, supaya
+      // lebar tiap foto sudah pasti sejak awal. Tanpa ini lebarnya baru
+      // diketahui setelah gambar selesai diunduh — dan panjang putaran yang
+      // dihitung sebelum itu akan jauh terlalu pendek.
+      items.forEach(function (btn) {
+        var im = btn.querySelector('img');
+        if (!im) return;
+        var w = parseFloat(im.getAttribute('width'));
+        var h = parseFloat(im.getAttribute('height'));
+        if (w > 0 && h > 0) btn.style.aspectRatio = w + ' / ' + h;
+      });
+
       var salinan = items.map(function (btn) {
         return btn.parentNode.cloneNode(true);
       });
@@ -472,62 +484,125 @@
       });
 
       var wadah = track.parentNode;   // .gallery__scroller
+      if (!track.animate) return;     // browser lama: deret diam saja, tetap bisa diklik
 
       // Jarak sampai salinan kedua berada tepat di posisi awal salinan
       // pertama. Bukan separuh lebar jalur: `gap` menyisipkan satu celah
       // tambahan di sambungan kedua salinan, jadi setengah celah harus
       // ikut dihitung — kalau tidak, tiap putaran meleset sedikit dan
       // lama-lama sambungannya terlihat meloncat.
-      var periode = 0;
-      function hitungPeriode() {
+      var LAJU = 26;        // piksel per detik
+      var periode = 0, durasi = 0;
+
+      function ukurPeriode() {
         var gaya = window.getComputedStyle(track);
         var celah = parseFloat(gaya.columnGap || gaya.gap) || 14;
-        periode = (track.scrollWidth + celah) / 2;
+        // Jarak sampai salinan kedua berada tepat di posisi awal salinan
+        // pertama. Bukan separuh lebar jalur: `gap` menyisipkan satu celah
+        // tambahan di sambungan kedua salinan, jadi setengah celah ikut
+        // dihitung — kalau tidak, tiap putaran meleset dan lama-lama
+        // sambungannya terlihat meloncat.
+        return (track.scrollWidth + celah) / 2;
       }
-      hitungPeriode();
-      window.addEventListener('resize', hitungPeriode);
 
-      var LAJU = 26;              // piksel per detik
-      var JEDA_SENTUH = 2600;     // diam sejenak setelah tamu melepas
-      var lanjutPada = 0;
-      var ditunjuk = false;
-      var waktuLalu = 0;
+      periode = ukurPeriode();
+      durasi = (periode / LAJU) * 1000;
 
-      // Dimatikan bila tamu memilih pengurangan gerak di setelan perangkatnya.
+      // Dijalankan lewat Web Animations API, bukan penambahan posisi tiap
+      // frame. Animasi transform diserahkan ke compositor sehingga tetap
+      // halus, sementara currentTime-nya bisa digeser bebas — itulah yang
+      // membuat deret ini sekaligus bisa ditarik jari.
+      var jalan = track.animate(
+        [{ transform: 'translateX(0px)' }, { transform: 'translateX(' + (-periode) + 'px)' }],
+        { duration: durasi, iterations: Infinity, easing: 'linear' }
+      );
+
+      // Ukuran bisa berubah setelah gambar tuntas diunduh atau layar diputar.
+      // Panjang putaran ikut disesuaikan tanpa menyentak: kemajuan putarannya
+      // dipertahankan sebagai pecahan, bukan sebagai milidetik.
+      function sesuaikan() {
+        var baru = ukurPeriode();
+        if (!baru || Math.abs(baru - periode) < 1) return;
+        var pecahan = durasi ? ((jalan.currentTime || 0) % durasi) / durasi : 0;
+        periode = baru;
+        durasi = (periode / LAJU) * 1000;
+        jalan.effect.setKeyframes([
+          { transform: 'translateX(0px)' },
+          { transform: 'translateX(' + (-periode) + 'px)' }
+        ]);
+        jalan.effect.updateTiming({ duration: durasi });
+        jalan.currentTime = pecahan * durasi;
+      }
+
+      window.addEventListener('load', sesuaikan);
+      window.addEventListener('resize', sesuaikan);
+      // Tiap foto yang selesai dimuat bisa mengubah lebar deretnya.
+      $$('img', track).forEach(function (im) {
+        if (!im.complete) im.addEventListener('load', sesuaikan);
+      });
+
       var kurangiGerak = window.matchMedia &&
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (kurangiGerak) jalan.pause();
 
-      function langkah(ts) {
-        if (!waktuLalu) waktuLalu = ts;
-        var dt = (ts - waktuLalu) / 1000;
-        waktuLalu = ts;
-
-        // dt besar berarti tab baru kembali dari latar belakang; kalau
-        // dipakai apa adanya, galerinya melompat jauh sekaligus.
-        if (!ditunjuk && Date.now() > lanjutPada && dt > 0 && dt < 0.25) {
-          wadah.scrollLeft += LAJU * dt;
-        }
-
-        // Jaga posisi selalu berada di salinan pertama. Dilakukan tanpa
-        // animasi sehingga lompatannya tidak terlihat: isi di posisi baru
-        // persis sama dengan isi di posisi lama.
-        if (wadah.scrollLeft >= periode) wadah.scrollLeft -= periode;
-        else if (wadah.scrollLeft < 0) wadah.scrollLeft += periode;
-
-        window.requestAnimationFrame(langkah);
+      function posisiSekarang() {
+        return ((jalan.currentTime || 0) / durasi) * periode;
+      }
+      function pindahKe(posisi) {
+        // Dibungkus ke dalam satu periode: di titik mana pun kelipatannya,
+        // isi yang terlihat sama persis, jadi pembungkusan tak kasatmata.
+        var p = ((posisi % periode) + periode) % periode;
+        jalan.currentTime = (p / periode) * durasi;
       }
 
-      if (!kurangiGerak) window.requestAnimationFrame(langkah);
+      /* ---- Tarik dengan jari atau kursor ---- */
+      var menarik = false, xAwal = 0, posisiAwal = 0, jarakTarik = 0;
+      var JARAK_ANGGAP_TARIKAN = 6;   // di bawah ini masih dihitung ketukan
 
-      ['pointerdown', 'touchstart', 'wheel'].forEach(function (nama) {
-        wadah.addEventListener(nama, function () {
-          lanjutPada = Date.now() + JEDA_SENTUH;
-        }, { passive: true });
+      wadah.addEventListener('pointerdown', function (e) {
+        if (e.button && e.button !== 0) return;
+        menarik = true;
+        jarakTarik = 0;
+        xAwal = e.clientX;
+        posisiAwal = posisiSekarang();
+        jalan.pause();
+        wadah.classList.add('is-ditarik');
+        wadah.setPointerCapture(e.pointerId);
       });
-      wadah.addEventListener('mouseenter', function () { ditunjuk = true; });
-      wadah.addEventListener('mouseleave', function () { ditunjuk = false; });
-      wadah.addEventListener('focusin', function () { ditunjuk = true; });
-      wadah.addEventListener('focusout', function () { ditunjuk = false; });
+
+      wadah.addEventListener('pointermove', function (e) {
+        if (!menarik) return;
+        var geser = e.clientX - xAwal;
+        jarakTarik = Math.max(jarakTarik, Math.abs(geser));
+        pindahKe(posisiAwal - geser);
+      });
+
+      function lepas(e) {
+        if (!menarik) return;
+        menarik = false;
+        wadah.classList.remove('is-ditarik');
+        if (e && e.pointerId != null && wadah.releasePointerCapture) {
+          try { wadah.releasePointerCapture(e.pointerId); } catch (err) { /* sudah lepas */ }
+        }
+        if (!kurangiGerak) jalan.play();
+      }
+      wadah.addEventListener('pointerup', lepas);
+      wadah.addEventListener('pointercancel', lepas);
+      wadah.addEventListener('pointerleave', lepas);
+
+      // Tarikan tidak boleh berakhir dengan membuka lightbox. Ditahan di fase
+      // menangkap supaya pendengar klik pada tombolnya tidak pernah terpanggil.
+      wadah.addEventListener('click', function (e) {
+        if (jarakTarik > JARAK_ANGGAP_TARIKAN) {
+          e.preventDefault();
+          e.stopPropagation();
+          jarakTarik = 0;
+        }
+      }, true);
+
+      // Berhenti saat kursor menunjuk, supaya foto bisa diamati dan diklik
+      wadah.addEventListener('mouseenter', function () { jalan.pause(); });
+      wadah.addEventListener('mouseleave', function () { if (!menarik && !kurangiGerak) jalan.play(); });
 
       // Salinan ikut membuka lightbox, memakai nomor foto aslinya.
       track.addEventListener('click', function (e) {
