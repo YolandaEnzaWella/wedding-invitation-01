@@ -1,0 +1,17 @@
+# Sistem
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Log & sementara
+*.log
+.cache/
+tmp/
+
+# Dependensi (jika nanti dipakai)
+node_modules/

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="ogb" cx="50%" cy="0%" r="130%">
+      <stop offset="0" stop-color="#6E1929"/><stop offset=".5" stop-color="#4B0D18"/><stop offset="1" stop-color="#3B0810"/>
+    </radialGradient>
+    <pattern id="ogp" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M32 8 44 24 32 40 20 24Z" fill="none" stroke="#C9A55C" stroke-width="1.2" opacity=".28"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogb)"/>
+  <rect width="1200" height="630" fill="url(#ogp)"/>
+  <g fill="#C9A55C" opacity=".22">
+    <path d="M0 630v-70c52-9 88-93 104-250 18 157 70 241 116 250v-58c55-9 91-93 106-256 18 163 70 247 119 256v64c58-9 110-87 128-262 15 163 44 247 96 256v70z"/>
+  </g>
+  <g fill="#C9A55C">
+    <path d="M580 92l12-52 24 28 24-40 24 40 24-28 12 52z" opacity=".9"/>
+  </g>
+  <text x="600" y="190" font-family="Georgia, serif" font-size="26" fill="#DCC087" text-anchor="middle" letter-spacing="10">THE WEDDING OF</text>
+  <text x="600" y="330" font-family="Georgia, serif" font-style="italic" font-size="130" fill="#FDF9F0" text-anchor="middle">Yogi &amp; Ratna</text>
+  <text x="600" y="400" font-family="Georgia, serif" font-size="34" fill="#EEDFB4" text-anchor="middle" letter-spacing="14">12 . 10 . 2025</text>
+  <text x="600" y="460" font-family="Georgia, serif" font-style="italic" font-size="24" fill="#C9A55C" text-anchor="middle">Adat Basandi Syarak, Syarak Basandi Kitabullah</text>
+  <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#C9A55C" stroke-width="2" opacity=".55"/>
+</svg>
