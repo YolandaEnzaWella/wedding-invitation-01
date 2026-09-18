@@ -16,10 +16,27 @@ tmp/
 # Dependensi (jika nanti dipakai)
 node_modules/
 
-# PNG latar asli (masing-masing ~2,5 MB, total ~16,5 MB).
-# Yang dipakai situs adalah hasil olahannya di assets/img/bg/*.webp — jauh
-# lebih ringan dan itulah yang diunduh tamu. PNG asli disimpan lokal saja
-# supaya repo dan proses deploy tidak membawa 16 MB berkas yang tak pernah
-# disajikan. Hapus dua baris di bawah bila ingin ikut menyimpannya di GitHub.
+# ---------------------------------------------------------------------------
+# Berkas gambar SUMBER (PNG/JPEG mentah, total ~27 MB).
+#
+# Yang disajikan ke tamu adalah hasil olahannya:
+#   assets/img/bg/*.webp       <- dari bg*.png        (tools/optimize-bg.py)
+#   assets/img/ornamen/*.webp  <- dari asset*.png     (tools/optimize-asset.py)
+#   assets/img/foto/*.webp     <- dari couple-*.png,
+#                                 braide*.jpeg        (tools/optimize-photo.py)
+#
+# Sumbernya sengaja tidak ikut di-commit: tidak pernah diunduh tamu, tapi akan
+# terbawa di tiap deploy GitHub Pages dan menggelembungkan riwayat repo.
+# SIMPAN SENDIRI cadangannya — bila hilang, hasil WebP tidak bisa dibuat ulang.
+# Hapus baris-baris di bawah bila ingin sumbernya ikut tersimpan di GitHub.
+# ---------------------------------------------------------------------------
 assets/img/bg?.png
 assets/img/bg??.png
+assets/img/asset?.png
+assets/img/asset??.png
+assets/img/couple-*.png
+assets/img/bride-*.png
+assets/img/groom-*.png
+assets/img/braide*.jpeg
+assets/img/masjid.png
+assets/img/rumah.png

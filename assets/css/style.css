@@ -189,6 +189,30 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .subtitle--light { color: rgba(238, 223, 180, .72); }
 .subtitle--left { text-align: left; }
 
+/* ---------- ORNAMEN TEMPEL ----------
+   Latar tiap bagian sudah ramai, jadi ornamen dipakai seperlunya: satu peran
+   per bagian, dan tidak pernah berdampingan dengan ornamen latar yang sejenis
+   (marawa misalnya hanya dipasang di bagian yang latarnya tidak punya marawa). */
+
+/* Pembatas gonjong di bawah judul bagian */
+.ornamen-pembatas {
+  display: block;
+  width: min(300px, 64%);
+  height: auto;
+  margin: 10px auto 24px;
+  opacity: .92;
+}
+.ornamen-pembatas--kiri { margin-inline: 0; width: min(260px, 70%); }
+
+/* Lambang kecil di atas judul atau teks */
+.ornamen-crest {
+  display: block;
+  width: clamp(64px, 9vw, 96px);
+  height: auto;
+  margin: 0 auto 14px;
+}
+.ornamen-crest--lebar { width: clamp(120px, 17vw, 180px); margin-bottom: 6px; }
+
 .divider--amp {
   display: flex; align-items: center; justify-content: center;
   gap: 14px;
@@ -279,7 +303,13 @@ button { font: inherit; color: inherit; cursor: pointer; }
   to   { opacity: 1; transform: none; }
 }
 
-.cover__crown { width: 58px; height: 36px; fill: var(--gold-400); margin-bottom: 12px; }
+.cover__crown {
+  display: block;
+  width: clamp(150px, 34vw, 240px);
+  height: auto;
+  margin: 0 auto 2px;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .45));
+}
 
 .cover__eyebrow {
   font-size: 11px;
@@ -560,22 +590,47 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .person__suku { font-size: 12.5px; color: var(--ink-500); margin-top: 4px; }
 
 .couple__amp {
-  position: relative;
   display: grid; place-items: center;
   width: clamp(64px, 9vw, 100px);
-  aspect-ratio: 1;
   flex: none;
 }
-.couple__diamond { position: absolute; inset: 0; width: 100%; height: 100%; fill: var(--maroon-700); }
 .couple__amp span {
-  position: relative;
   font-family: var(--ff-serif);
-  font-size: clamp(20px, 3vw, 28px);
+  font-size: clamp(54px, 9vw, 92px);
   font-style: italic;
-  color: var(--gold-300);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--maroon-700);
 }
 
 /* ---------- 13. ACARA ---------- */
+/* Marawa dipasang di sini, bukan di cover atau home: latar bg8 pada bagian ini
+   satu-satunya yang tidak menggambarkan marawa, jadi tidak terlihat dobel. */
+.events__marawa {
+  position: absolute;
+  top: clamp(6px, 2vw, 22px);
+  width: clamp(54px, 8vw, 104px);
+  height: auto;
+  opacity: .95;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, .4));
+  animation: berkibar 6s ease-in-out infinite;
+}
+.events__marawa--left { left: clamp(4px, 2.5vw, 44px); transform: scaleX(-1); }
+.events__marawa--right { right: clamp(4px, 2.5vw, 44px); animation-delay: -3s; }
+
+@keyframes berkibar {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50%      { transform: rotate(1.6deg); }
+}
+/* Yang kiri dicerminkan, jadi putarannya harus ikut dicerminkan juga —
+   kalau tidak, keduanya bergoyang ke arah yang sama dan terlihat janggal. */
+.events__marawa--left { animation-name: berkibar-kiri; }
+@keyframes berkibar-kiri {
+  0%, 100% { transform: scaleX(-1) rotate(-1.6deg); }
+  50%      { transform: scaleX(-1) rotate(1.6deg); }
+}
+
 .events__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -634,11 +689,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gallery__track::-webkit-scrollbar-track { background: var(--cream-200); border-radius: 999px; }
 .gallery__track > li { flex: 0 0 auto; scroll-snap-align: start; }
 
+/* Tinggi seragam, lebar mengikuti bentuk asli tiap foto. Kalau semua dipaksa
+   3:2, foto tegak akan terpotong di atas dan bawah — persis di suntiang
+   pengantin wanita, bagian yang paling ingin ditampilkan. */
 .gallery__item {
   position: relative;
   display: block;
-  width: clamp(150px, 20vw, 210px);
-  aspect-ratio: 3 / 2;
+  height: clamp(150px, 21vw, 220px);
+  width: auto;
   padding: 0;
   border: 1px solid var(--gold-400);
   border-radius: 10px;
@@ -646,7 +704,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--cream-200);
   transition: transform .35s var(--ease), box-shadow .35s var(--ease);
 }
-.gallery__item img { width: 100%; height: 100%; object-fit: cover; }
+.gallery__item img { height: 100%; width: auto; display: block; }
 .gallery__item:hover { transform: translateY(-4px) scale(1.015); box-shadow: var(--shadow-md); }
 .gallery__zoom {
   position: absolute; inset: 0;
@@ -834,11 +892,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 .bank__name { font-size: 12px; color: var(--ink-500); margin-bottom: 12px; }
-.bank__envelope {
-  position: absolute; right: -14px; bottom: -14px;
-  width: 120px; height: 120px;
-  fill: var(--gold-400);
-  opacity: .16;
+.bank__floral {
+  position: absolute; right: -26px; bottom: -22px;
+  width: 170px; height: auto;
+  opacity: .20;
   pointer-events: none;
 }
 
@@ -852,7 +909,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   font-size: 14px;
   color: var(--gold-300);
 }
-.closing__songket { width: 120px; height: 40px; fill: var(--gold-400); opacity: .7; margin: 18px auto 0; }
 .closing__credit {
   display: flex; align-items: center; justify-content: center; gap: 6px;
   margin-top: 14px;

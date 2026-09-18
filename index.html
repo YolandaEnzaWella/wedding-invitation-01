@@ -24,25 +24,6 @@
 <!-- ============ SVG SPRITE (ornamen & ikon) ============ -->
 <svg class="sprite" aria-hidden="true" focusable="false">
   <defs>
-    <!-- Motif songket / bunga -->
-    <symbol id="ico-songket" viewBox="0 0 120 40">
-      <path d="M60,4 C68,14 78,18 92,20 C78,22 68,26 60,36 C52,26 42,22 28,20 C42,18 52,14 60,4 Z"/>
-      <circle cx="12" cy="20" r="4"/><circle cx="108" cy="20" r="4"/>
-      <path d="M22,20 H2 M118,20 H98" stroke="currentColor" stroke-width="1.5"/>
-    </symbol>
-
-    <!-- Mahkota / suntiang kecil -->
-    <symbol id="ico-crown" viewBox="0 0 64 40">
-      <path d="M4,36 L10,10 L22,24 L32,4 L42,24 L54,10 L60,36 Z"/>
-      <rect x="4" y="34" width="56" height="5" rx="2.5"/>
-      <circle cx="32" cy="2" r="2.5"/><circle cx="10" cy="7" r="2.5"/><circle cx="54" cy="7" r="2.5"/>
-    </symbol>
-
-    <!-- Sudut ornamen floral -->
-    <symbol id="ico-corner" viewBox="0 0 120 120">
-      <path d="M2,2 C40,4 60,20 70,50 C76,32 88,22 108,20 C92,30 84,44 84,62 C96,54 108,54 118,60 C104,60 94,68 90,82 C102,80 110,84 116,92 C102,88 92,92 86,104 C82,88 72,80 58,80 C64,66 62,52 52,40 C40,26 22,14 2,10 Z"/>
-    </symbol>
-
     <!-- Ikon UI -->
     <symbol id="ic-home" viewBox="0 0 24 24"><path d="M3 11.2 12 4l9 7.2V20a1 1 0 0 1-1 1h-5v-6H10v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></symbol>
     <symbol id="ic-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3 10h18M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
@@ -71,7 +52,7 @@
 ============================================================ -->
 <section class="cover" id="cover">
   <div class="cover__inner">
-    <svg class="cover__crown" viewBox="0 0 64 40"><use href="#ico-crown"/></svg>
+    <img class="cover__crown" src="assets/img/ornamen/asset2.webp" alt="" width="800" height="383">
     <p class="cover__eyebrow">The Wedding of</p>
     <h1 class="cover__names">Yogi <span class="amp">&amp;</span> Ratna</h1>
 
@@ -143,6 +124,7 @@
     <div class="container reveal">
       <h3 class="title title--light">Hitung Mundur</h3>
       <p class="subtitle subtitle--light">Menuju Hari Bahagia</p>
+      <img class="ornamen-pembatas" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
 
       <div class="countdown__grid" id="countdown" role="timer" aria-live="off">
         <div class="cd"><span class="cd__num" data-cd="days">00</span><span class="cd__label">Hari</span></div>
@@ -159,6 +141,7 @@
   ========================================================== -->
   <section class="verse band band--cream">
     <div class="container container--narrow reveal">
+      <img class="ornamen-crest" src="assets/img/ornamen/asset5.webp" alt="" loading="lazy" width="800" height="728">
       <p class="verse__arabic" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَءَايَٰتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
       <p class="verse__ref">(QS. Ar-Rum : 21)</p>
       <p class="verse__motto">Adat Basandi Syarak, Syarak Basandi Kitabullah</p>
@@ -170,13 +153,14 @@
   ========================================================== -->
   <section class="couple band band--cream-alt" id="mempelai">
     <div class="container reveal">
+      <img class="ornamen-crest ornamen-crest--lebar" src="assets/img/ornamen/asset4.webp" alt="" loading="lazy" width="800" height="585">
       <h3 class="title">Mempelai</h3>
       <p class="subtitle">Dua Hati, Satu Tujuan</p>
 
       <div class="couple__grid">
         <article class="person">
           <div class="person__frame">
-            <img src="assets/img/groom.svg" alt="Foto mempelai pria, Yogi Pratama" loading="lazy" width="300" height="380">
+            <img src="assets/img/foto/groom.webp" alt="Foto mempelai pria, Yogi Pratama" loading="lazy" width="202" height="269">
           </div>
           <div class="person__body">
             <h4 class="person__name">Yogi Pratama</h4>
@@ -185,16 +169,11 @@
           </div>
         </article>
 
-        <div class="couple__amp" aria-hidden="true">
-          <svg class="couple__diamond" viewBox="0 0 120 120">
-            <path d="M60 2 74 46 118 60 74 74 60 118 46 74 2 60 46 46Z"/>
-          </svg>
-          <span>&amp;</span>
-        </div>
+        <div class="couple__amp" aria-hidden="true"><span>&amp;</span></div>
 
         <article class="person person--rev">
           <div class="person__frame">
-            <img src="assets/img/bride.svg" alt="Foto mempelai wanita, Ratna Sari" loading="lazy" width="300" height="380">
+            <img src="assets/img/foto/bride.webp" alt="Foto mempelai wanita, Ratna Sari" loading="lazy" width="620" height="827">
           </div>
           <div class="person__body">
             <h4 class="person__name">Ratna Sari</h4>
@@ -211,13 +190,15 @@
   ========================================================== -->
   <section class="events band band--maroon" id="acara">
     <div class="band__ornament" aria-hidden="true"></div>
+    <img class="events__marawa events__marawa--left" src="assets/img/ornamen/asset1.webp" alt="" loading="lazy" width="800" height="571">
+    <img class="events__marawa events__marawa--right" src="assets/img/ornamen/asset1.webp" alt="" loading="lazy" width="800" height="571">
     <div class="container reveal">
       <h3 class="title title--light">Detail Acara</h3>
       <p class="subtitle subtitle--light">Kami mengundang dengan penuh kebahagiaan</p>
 
       <div class="events__grid">
         <article class="event">
-          <div class="event__thumb"><img src="assets/img/akad.svg" alt="" loading="lazy" width="160" height="160"></div>
+          <div class="event__thumb"><img src="assets/img/foto/akad.webp" alt="" loading="lazy" width="420" height="419"></div>
           <div class="event__body">
             <h4 class="event__title">Akad Nikah</h4>
             <ul class="event__list">
@@ -232,7 +213,7 @@
         </article>
 
         <article class="event">
-          <div class="event__thumb"><img src="assets/img/resepsi.svg" alt="" loading="lazy" width="160" height="160"></div>
+          <div class="event__thumb"><img src="assets/img/foto/resepsi.webp" alt="" loading="lazy" width="420" height="412"></div>
           <div class="event__body">
             <h4 class="event__title">Resepsi / Baralek</h4>
             <ul class="event__list">
@@ -256,16 +237,20 @@
     <div class="container reveal">
       <h3 class="title title--left">Galeri Foto</h3>
       <p class="subtitle subtitle--left">Momen Indah Bersama</p>
+      <img class="ornamen-pembatas ornamen-pembatas--kiri" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
 
       <div class="gallery__scroller">
         <button class="gallery__arrow gallery__arrow--prev" id="galPrev" type="button" aria-label="Foto sebelumnya"><svg viewBox="0 0 24 24"><use href="#ic-chev-left"/></svg></button>
         <ul class="gallery__track" id="galleryTrack">
-          <li><button class="gallery__item" type="button" data-index="0"><img src="assets/img/gallery-1.svg" alt="Foto prewedding 1" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="1"><img src="assets/img/gallery-2.svg" alt="Foto prewedding 2" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="2"><img src="assets/img/gallery-3.svg" alt="Foto prewedding 3" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="3"><img src="assets/img/gallery-4.svg" alt="Foto prewedding 4" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="4"><img src="assets/img/gallery-5.svg" alt="Foto prewedding 5" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
-          <li><button class="gallery__item" type="button" data-index="5"><img src="assets/img/gallery-6.svg" alt="Foto prewedding 6" loading="lazy" width="320" height="220"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="0"><img src="assets/img/foto/gallery-1.webp" alt="Yogi dan Ratna berdekatan dengan busana adat Minang" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="1"><img src="assets/img/foto/gallery-2.webp" alt="Ratna mengenakan suntiang emas" loading="lazy" width="325" height="496"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="2"><img src="assets/img/foto/gallery-3.webp" alt="Yogi dan Ratna beradu kening" loading="lazy" width="505" height="337"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="3"><img src="assets/img/foto/gallery-4.webp" alt="Yogi dan Ratna duduk bersanding" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="4"><img src="assets/img/foto/gallery-5.webp" alt="Yogi mengenakan destar dan busana adat" loading="lazy" width="423" height="533"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="5"><img src="assets/img/foto/gallery-6.webp" alt="Yogi dan Ratna berdiri di depan rumah gadang" loading="lazy" width="498" height="332"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="6"><img src="assets/img/foto/gallery-7.webp" alt="Ratna berlatar hiasan bunga dan marawa" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="7"><img src="assets/img/foto/gallery-8.webp" alt="Yogi dan Ratna berlatar perbukitan Minangkabau" loading="lazy" width="655" height="437"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
+          <li><button class="gallery__item" type="button" data-index="8"><img src="assets/img/foto/gallery-9.webp" alt="Ratna dalam balutan songket merah marun" loading="lazy" width="900" height="600"><span class="gallery__zoom"><svg viewBox="0 0 24 24"><use href="#ic-zoom"/></svg></span></button></li>
         </ul>
         <button class="gallery__arrow gallery__arrow--next" id="galNext" type="button" aria-label="Foto berikutnya"><svg viewBox="0 0 24 24"><use href="#ic-chev-right"/></svg></button>
       </div>
@@ -355,7 +340,7 @@
             </button>
           </div>
 
-          <svg class="bank__envelope" viewBox="0 0 120 120" aria-hidden="true"><use href="#ico-corner"/></svg>
+          <img class="bank__floral" src="assets/img/ornamen/asset5.webp" alt="" loading="lazy" width="800" height="728">
         </div>
 
       </div>
@@ -374,7 +359,7 @@
         semoga menjadi bagian dari kebahagiaan kami.
       </p>
       <p class="closing__motto">&ldquo;Adat Basandi Syarak, Syarak Basandi Kitabullah&rdquo;</p>
-      <svg class="closing__songket" viewBox="0 0 120 40"><use href="#ico-songket"/></svg>
+      <img class="ornamen-pembatas" src="assets/img/ornamen/asset3.webp" alt="" loading="lazy" width="800" height="261">
       <p class="closing__credit">Created with <svg class="closing__heart" viewBox="0 0 24 24"><use href="#ic-heart"/></svg> by Yogi &amp; Ratna</p>
     </div>
   </footer>

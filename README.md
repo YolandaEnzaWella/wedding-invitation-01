@@ -51,15 +51,59 @@ ingin diganti. Untuk rekening, ubah juga atribut `data-copy` pada tombol salin
 
 ### Foto
 
-Ganti berkas di `assets/img/` dengan foto asli. Nama berkas boleh diubah asalkan
-`src` pada `index.html` ikut disesuaikan.
+Foto prewedding ada di `assets/img/foto/` sebagai WebP, hasil olahan dari
+berkas mentah di `assets/img/`:
 
-| Berkas | Dipakai di | Rasio yang disarankan |
+| Hasil | Dipakai di | Sumber |
 | --- | --- | --- |
-| `groom.svg`, `bride.svg` | Bagian Mempelai | 3 : 4 (potret) |
-| `gallery-1.svg` … `gallery-6.svg` | Galeri | 3 : 2 (lanskap) |
-| `akad.svg`, `resepsi.svg` | Kartu acara | 1 : 1 |
+| `groom.webp` | Mempelai pria | `groom-01.png` |
+| `bride.webp` | Mempelai wanita | `bride-01.png` |
+| `akad.webp` | Kartu Akad Nikah | `masjid.png` |
+| `resepsi.webp` | Kartu Resepsi | `rumah.png` |
+| `gallery-1.webp` … `gallery-9.webp` | Galeri | campuran `couple-*`, `bride-*`, `groom-*`, `braide*` |
 | `og-cover.svg` | Pratinjau saat dibagikan | 1200 × 630 |
+
+Gambar kartu acara dipotong ke dalam 7–8% supaya tepi putih dan sudut membulat
+pada kartunya hilang, sehingga panel maroonnya rapat ke tepi bingkai.
+
+Galeri memakai **tinggi seragam dengan lebar mengikuti bentuk asli**, bukan
+rasio 3:2 seragam. Kalau semua dipaksa 3:2, foto tegak akan terpotong di atas
+dan bawah — persis di suntiang pengantin wanita, bagian yang justru paling
+ingin ditampilkan.
+
+Untuk mengganti foto: taruh berkas baru di `assets/img/`, sesuaikan daftar
+`TUGAS` di `tools/optimize-photo.py` (nama sumber dan kotak potongnya), lalu:
+
+```bash
+python tools/optimize-photo.py
+```
+
+Kotak potong ditulis tangan per foto, bukan otomatis di tengah — pemotongan
+otomatis akan memenggal suntiang pengantin wanita yang justru jadi ciri khasnya.
+Foto yang sudah tegak sejak sumbernya dipakai apa adanya tanpa dipotong.
+
+### Ornamen
+
+Ornamen tempel ada di `assets/img/ornamen/`, hasil olahan `asset*.png`:
+
+| Berkas | Dipakai di |
+| --- | --- |
+| `asset1.webp` | Marawa sepasang di Detail Acara |
+| `asset2.webp` | Suntiang di atas nama, pada cover |
+| `asset3.webp` | Pembatas di bawah judul Hitung Mundur, Galeri, Terima Kasih |
+| `asset4.webp` | Sepasang burung di atas judul Mempelai |
+| `asset5.webp` | Lambang di atas ayat, dan sudut kartu Amplop Digital |
+
+Marawa sengaja hanya dipasang di Detail Acara: latar bagian itu (`bg8`)
+satu-satunya yang tidak menggambarkan marawa, sehingga tidak terlihat dobel.
+
+```bash
+python tools/optimize-asset.py
+```
+
+Skrip ini juga menghapus latar putih yang menyatu dengan gambar, bila ada —
+perambatan dilakukan dari tepi kanvas, bukan "buang semua piksel putih",
+supaya sorotan terang di dalam objek tidak ikut hilang.
 
 ## Latar bergambar
 
@@ -166,12 +210,20 @@ dokumennya lewat Firebase Console.
 .
 ├── index.html
 ├── firestore.rules              aturan keamanan Firebase
+├── tools/                       skrip pengolah gambar
+│   ├── optimize-bg.py
+│   ├── optimize-asset.py
+│   └── optimize-photo.py
 ├── assets/
 │   ├── css/style.css
 │   ├── js/
 │   │   ├── firebase-config.js   isi config Firebase di sini
 │   │   └── main.js
 │   ├── img/
+│   │   ├── bg/                  latar tiap bagian (WebP)
+│   │   ├── ornamen/             ornamen tempel (WebP)
+│   │   ├── foto/                foto prewedding (WebP)
+│   │   └── *.png, *.jpeg        berkas sumber, tidak ikut di-commit
 │   └── audio/
 └── README.md
 ```
