@@ -714,34 +714,34 @@ button { font: inherit; color: inherit; cursor: pointer; }
    oleh JavaScript, lalu seluruh jalur digeser tepat separuh panjangnya —
    pada titik itu salinan kedua berada persis di posisi awal salinan pertama,
    sehingga pengulangannya tidak terlihat sambungannya. */
+/* Galeri berjalan sendiri DAN tetap bisa digeser jari.
+   Karena itu wadahnya benar-benar digulir, bukan jalurnya yang digeser dengan
+   transform: transform hanya memindahkan gambar di layar, dan jari tamu tidak
+   punya apa pun untuk ditarik. Lajunya dijalankan JavaScript yang menambah
+   scrollLeft sedikit demi sedikit, dan berhenti sendiri begitu tamu menyentuh. */
 .gallery__scroller {
   position: relative;
   margin-top: 4px;
-  overflow: hidden;
-  /* Ujung kiri dan kanan dibuat memudar supaya foto tidak terpotong mendadak
-     di tepi layar, melainkan seolah masuk dan keluar dari balik halaman. */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: auto;          /* jangan warisi gerak halus dari <html> */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;          /* batangnya disembunyikan, bukan gulirnya */
+  -ms-overflow-style: none;
+  /* Ujung kiri dan kanan memudar supaya foto tidak terpotong mendadak di tepi
+     layar, melainkan seolah masuk dan keluar dari balik halaman. */
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
+.gallery__scroller::-webkit-scrollbar { display: none; }
+
 .gallery__track {
   display: flex;
   gap: 14px;
   width: max-content;
   padding: 6px 0 14px;
 }
-.gallery__track.is-berjalan { animation: galeriBerjalan var(--durasi, 60s) linear infinite; }
 .gallery__track > li { flex: 0 0 auto; }
-
-@keyframes galeriBerjalan {
-  from { transform: translateX(0); }
-  /* Jarak tempuhnya separuh jalur ditambah satu jarak antar-foto, sebab
-     `gap` menyisipkan satu celah tambahan di sambungan kedua salinan. */
-  to   { transform: translateX(calc(-50% - 7px)); }
-}
-
-/* Berhenti saat disentuh atau ditunjuk, supaya tamu bisa mengamati satu foto */
-.gallery__scroller:hover .gallery__track.is-berjalan,
-.gallery__track.is-berjalan:focus-within { animation-play-state: paused; }
 
 /* Tinggi seragam, lebar mengikuti bentuk asli tiap foto. Kalau semua dipaksa
    3:2, foto tegak akan terpotong di atas dan bawah — persis di suntiang
@@ -1283,45 +1283,45 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 860px) and (orientation: portrait) {
   .cover, .hero,
   .countdown, .verse, .couple, .events, .gallery, .rsvp, .closing {
-    background-position: top center, bottom center;
-    background-size: 100% auto, 100% auto;
-    background-repeat: no-repeat, no-repeat;
+    background-position: top center, bottom center, top center;
+    background-size: 100% auto, 100% auto, 100% auto;
+    background-repeat: no-repeat, no-repeat, repeat-y;
   }
 
   .cover {
-    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
+    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp"), url("../img/bg/bg2-mid.webp");
     background-color: #410906;
   }
   .hero {
-    background-image: url("../img/bg/bg1-top.webp"), url("../img/bg/bg1-bot.webp");
+    background-image: url("../img/bg/bg1-top.webp"), url("../img/bg/bg1-bot.webp"), url("../img/bg/bg1-mid.webp");
     background-color: #F2E1CB;
   }
   .countdown {
-    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp");
+    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp"), url("../img/bg/bg3-mid.webp");
     background-color: #410707;
   }
   .verse {
-    background-image: url("../img/bg/bg7-top.webp"), url("../img/bg/bg7-bot.webp");
+    background-image: url("../img/bg/bg7-top.webp"), url("../img/bg/bg7-bot.webp"), url("../img/bg/bg7-mid.webp");
     background-color: #F4E6D2;
   }
   .couple {
-    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
+    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp"), url("../img/bg/bg2-mid.webp");
     background-color: #410906;
   }
   .events {
-    background-image: url("../img/bg/bg6-top.webp"), url("../img/bg/bg6-bot.webp");
+    background-image: url("../img/bg/bg6-top.webp"), url("../img/bg/bg6-bot.webp"), url("../img/bg/bg6-mid.webp");
     background-color: #F2E0C8;
   }
   .gallery {
-    background-image: url("../img/bg/bg8-top.webp"), url("../img/bg/bg8-bot.webp");
+    background-image: url("../img/bg/bg8-top.webp"), url("../img/bg/bg8-bot.webp"), url("../img/bg/bg8-mid.webp");
     background-color: #3A0202;
   }
   .rsvp {
-    background-image: url("../img/bg/bg4-top.webp"), url("../img/bg/bg4-bot.webp");
+    background-image: url("../img/bg/bg4-top.webp"), url("../img/bg/bg4-bot.webp"), url("../img/bg/bg4-mid.webp");
     background-color: #F6E8D5;
   }
   .closing {
-    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp");
+    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp"), url("../img/bg/bg3-mid.webp");
     background-color: #410707;
   }
 }

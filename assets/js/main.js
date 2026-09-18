@@ -471,10 +471,63 @@
         track.appendChild(li);
       });
 
-      // Kecepatannya dipatok per foto, bukan durasi tetap. Kalau jumlah
-      // fotonya berubah, lajunya tetap sama dan tidak mendadak melesat.
-      track.style.setProperty('--durasi', (items.length * 6.5) + 's');
-      track.classList.add('is-berjalan');
+      var wadah = track.parentNode;   // .gallery__scroller
+
+      // Jarak sampai salinan kedua berada tepat di posisi awal salinan
+      // pertama. Bukan separuh lebar jalur: `gap` menyisipkan satu celah
+      // tambahan di sambungan kedua salinan, jadi setengah celah harus
+      // ikut dihitung — kalau tidak, tiap putaran meleset sedikit dan
+      // lama-lama sambungannya terlihat meloncat.
+      var periode = 0;
+      function hitungPeriode() {
+        var gaya = window.getComputedStyle(track);
+        var celah = parseFloat(gaya.columnGap || gaya.gap) || 14;
+        periode = (track.scrollWidth + celah) / 2;
+      }
+      hitungPeriode();
+      window.addEventListener('resize', hitungPeriode);
+
+      var LAJU = 26;              // piksel per detik
+      var JEDA_SENTUH = 2600;     // diam sejenak setelah tamu melepas
+      var lanjutPada = 0;
+      var ditunjuk = false;
+      var waktuLalu = 0;
+
+      // Dimatikan bila tamu memilih pengurangan gerak di setelan perangkatnya.
+      var kurangiGerak = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function langkah(ts) {
+        if (!waktuLalu) waktuLalu = ts;
+        var dt = (ts - waktuLalu) / 1000;
+        waktuLalu = ts;
+
+        // dt besar berarti tab baru kembali dari latar belakang; kalau
+        // dipakai apa adanya, galerinya melompat jauh sekaligus.
+        if (!ditunjuk && Date.now() > lanjutPada && dt > 0 && dt < 0.25) {
+          wadah.scrollLeft += LAJU * dt;
+        }
+
+        // Jaga posisi selalu berada di salinan pertama. Dilakukan tanpa
+        // animasi sehingga lompatannya tidak terlihat: isi di posisi baru
+        // persis sama dengan isi di posisi lama.
+        if (wadah.scrollLeft >= periode) wadah.scrollLeft -= periode;
+        else if (wadah.scrollLeft < 0) wadah.scrollLeft += periode;
+
+        window.requestAnimationFrame(langkah);
+      }
+
+      if (!kurangiGerak) window.requestAnimationFrame(langkah);
+
+      ['pointerdown', 'touchstart', 'wheel'].forEach(function (nama) {
+        wadah.addEventListener(nama, function () {
+          lanjutPada = Date.now() + JEDA_SENTUH;
+        }, { passive: true });
+      });
+      wadah.addEventListener('mouseenter', function () { ditunjuk = true; });
+      wadah.addEventListener('mouseleave', function () { ditunjuk = false; });
+      wadah.addEventListener('focusin', function () { ditunjuk = true; });
+      wadah.addEventListener('focusout', function () { ditunjuk = false; });
 
       // Salinan ikut membuka lightbox, memakai nomor foto aslinya.
       track.addEventListener('click', function (e) {

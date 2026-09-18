@@ -164,10 +164,17 @@ Karena itu di layar tegak gambarnya dipecah jadi dua pita:
 ```
 ┌──────────────┐  ← bgN-top.webp, selebar penuh, menempel di tepi atas
 │              │
-│   isi teks   │  ← warna dari bagian tengah gambar aslinya
+│   isi teks   │  ← bgN-mid.webp, diulang tegak mengisi sisa ruang
 │              │
 └──────────────┘  ← bgN-bot.webp, selebar penuh, menempel di tepi bawah
 ```
+
+Pita tengah membawa ornamen tepi kiri-kanan yang memang berjalan tegak lurus
+di bagian tengah gambar. Warna rata saja tidak cukup: pada cover yang setinggi
+layar, ruang itu mencapai dua pertiga halaman dan terbaca sebagai bidang
+kosong. Potongannya dicerminkan lalu disambung, sehingga baris pertama dan
+terakhir tile menjadi sama dan pengulangannya tidak pernah memperlihatkan
+garis sambung — apa pun isi gambarnya.
 
 Hasilnya ornamen tepi utuh tanpa terpotong sama sekali, dan karena
 `background-size: 100% auto` tidak pernah membesarkan gambar melebihi lebar

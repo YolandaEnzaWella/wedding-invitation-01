@@ -86,6 +86,35 @@ def _luruhkan(pita, dari_bawah):
     return pita
 
 
+def buat_tengah(im, stem, out_dir):
+    """Pita tengah yang diulang menutupi ruang di antara pita atas dan bawah.
+
+    Warna rata saja tidak cukup: pada cover yang setinggi layar, ruang itu
+    mencapai dua pertiga halaman dan terbaca sebagai bidang kosong. Pita ini
+    membawa ornamen tepi kiri-kanan yang memang berjalan tegak lurus di
+    bagian tengah gambar, jadi ruangnya terisi ornamen sungguhan.
+
+    Potongannya dicerminkan lalu disambung. Cerminan membuat baris pertama
+    dan baris terakhir tile menjadi sama, sehingga pengulangannya tidak
+    pernah memperlihatkan garis sambung — apa pun isi gambarnya."""
+    lebar = min(LEBAR_PITA, im.width)
+    tinggi = round(im.height * lebar / im.width)
+    kecil = im.resize((lebar, tinggi), Image.LANCZOS)
+
+    a = round(tinggi * 0.44)
+    b = round(tinggi * 0.56)
+    potongan = kecil.crop((0, a, lebar, b))
+    cermin = potongan.transpose(Image.FLIP_TOP_BOTTOM)
+
+    tile = Image.new("RGB", (lebar, potongan.height * 2))
+    tile.paste(potongan, (0, 0))
+    tile.paste(cermin, (0, potongan.height))
+
+    dest = os.path.join(out_dir, f"{stem}-mid.webp")
+    tile.save(dest, "WEBP", quality=KUALITAS_PITA, method=6)
+    return (f"{stem}-mid.webp", lebar, tile.height, os.path.getsize(dest))
+
+
 def buat_pita(im, stem, out_dir):
     """Simpan pita atas dan bawah selebar penuh. Tidak pernah diperbesar:
     kalau sumbernya lebih sempit dari LEBAR_PITA, dipakai apa adanya."""
@@ -149,6 +178,12 @@ def main():
                 print(f"{nama_pita}".ljust(18)
                       + f"{lw:>5} x {lh:<5}"
                       + f"{size / 1024:>8.0f} KB")
+
+            nama_mid, mw, mh, msize = buat_tengah(im, stem, OUT)
+            total_out += msize
+            print(f"{nama_mid}".ljust(18)
+                  + f"{mw:>5} x {mh:<5}"
+                  + f"{msize / 1024:>8.0f} KB")
 
             warna[stem] = warna_tengah(im)
 
