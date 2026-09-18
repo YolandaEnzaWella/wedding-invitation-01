@@ -41,8 +41,6 @@
   --nav-h: 56px;
   --ease: cubic-bezier(.22, 1, .36, 1);
 
-  /* Motif songket sebagai pola latar */
-  --songket: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23C9A55C' stroke-width='1' opacity='.30'%3E%3Cpath d='M32 4 L44 20 L32 36 L20 20 Z'/%3E%3Cpath d='M0 36 L12 52 L0 68 M64 36 L52 52 L64 68'/%3E%3Cpath d='M32 40 L38 48 L32 56 L26 48 Z'/%3E%3C/g%3E%3Ccircle cx='32' cy='20' r='2' fill='%23C9A55C' opacity='.35'/%3E%3C/svg%3E");
 }
 
 /* ---------- 2. RESET ---------- */
@@ -91,28 +89,57 @@ button { font: inherit; color: inherit; cursor: pointer; }
   padding-block: clamp(48px, 7vw, 88px);
   overflow: hidden;
 }
-.band--maroon {
-  background:
-    radial-gradient(120% 90% at 50% 0%, var(--maroon-600) 0%, var(--maroon-800) 55%, var(--maroon-900) 100%);
-  color: var(--cream-100);
+/* Warna dasar dipakai selama gambar latar belum termuat, sehingga teks
+   tidak pernah tampil di atas halaman putih kosong. */
+.band--maroon { background-color: var(--maroon-800); color: var(--cream-100); }
+.band--cream { background-color: var(--cream-50); }
+.band--cream-alt { background-color: var(--cream-100); }
+
+/* ---------- LATAR BERGAMBAR ----------
+   Tiap latar adalah lanskap 3:2 dengan ornamen di keempat tepinya dan ruang
+   kosong di tengah. `cover` memotong sisi kiri-kanan saat layar memanjang ke
+   bawah — justru yang kita inginkan, karena bagian paling khas (ornamen atas
+   dan deretan rumah gadang di bawah) tetap utuh.
+   `background-attachment: fixed` sengaja TIDAK dipakai: di iOS Safari efeknya
+   tersendat dan gambar melompat saat digulir. */
+.cover, .hero,
+.countdown, .verse, .couple, .events, .gallery, .rsvp, .closing {
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
+
+.cover     { background-image: url("../img/bg/bg2.webp"); }
+.hero      { background-image: url("../img/bg/bg1.webp"); }
+.countdown { background-image: url("../img/bg/bg3.webp"); }
+.verse     { background-image: url("../img/bg/bg7.webp"); }
+.couple    { background-image: url("../img/bg/bg5.webp"); }
+/* bg8 paling tenang di antara latar maroon — kartu acara yang padat teks
+   terbaca lebih bersih di atasnya daripada di atas bg3 yang ramai. */
+.events    { background-image: url("../img/bg/bg8.webp"); }
+.gallery   { background-image: url("../img/bg/bg6.webp"); }
+.rsvp      { background-image: url("../img/bg/bg4.webp"); }
+.closing   { background-image: url("../img/bg/bg2.webp"); }
+
+/* Kabut di tengah: menjaga teks tetap terbaca tanpa meredam ornamen tepi,
+   yang justru jadi daya tarik tiap latar. */
 .band--maroon::before {
   content: "";
   position: absolute; inset: 0;
-  background-image: var(--songket);
-  opacity: .28;
   pointer-events: none;
-}
-.band--cream { background: var(--cream-50); }
-.band--cream-alt {
-  background: linear-gradient(180deg, var(--cream-100) 0%, var(--cream-200) 100%);
+  background: radial-gradient(ellipse 80% 66% at 50% 50%,
+    rgba(59, 8, 16, .78) 0%,
+    rgba(59, 8, 16, .46) 56%,
+    rgba(59, 8, 16, .10) 100%);
 }
 .band--cream::before, .band--cream-alt::before {
   content: "";
   position: absolute; inset: 0;
-  background-image: var(--songket);
-  opacity: .30;
   pointer-events: none;
+  background: radial-gradient(ellipse 78% 64% at 50% 48%,
+    rgba(253, 249, 240, .88) 0%,
+    rgba(253, 249, 240, .56) 58%,
+    rgba(253, 249, 240, .06) 100%);
 }
 
 /* Garis emas tipis di tepi band maroon */
@@ -221,8 +248,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   z-index: 90;
   display: grid; place-items: center;
   padding: 32px 20px;
-  background:
-    radial-gradient(130% 100% at 50% 0%, var(--maroon-600) 0%, var(--maroon-800) 48%, var(--maroon-900) 100%);
+  background-color: var(--maroon-800);
   color: var(--cream-100);
   overflow: hidden;
   transition: transform 1s var(--ease), opacity .8s ease;
@@ -230,49 +256,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .cover.is-open { transform: translateY(-100%); opacity: 0; pointer-events: none; }
 .cover.is-gone { display: none; }
 
-.cover__bg { position: absolute; inset: 0; pointer-events: none; }
-.cover__bg::before {
+/* Nama mempelai berukuran besar, jadi kabutnya lebih pekat daripada di
+   bagian lain — dibuat lonjong mengikuti bentuk blok teksnya. */
+.cover::before {
   content: "";
   position: absolute; inset: 0;
-  background-image: var(--songket);
-  opacity: .34;
-}
-
-.cover__skyline {
-  position: absolute; inset-inline: 0; bottom: 0;
-  color: var(--gold-400);
-  line-height: 0;
-}
-.cover__skyline svg { width: 100%; display: block; fill: currentColor; }
-.cover__skyline--back { height: 46vh; opacity: .16; }
-.cover__skyline--front { height: 32vh; opacity: .26; }
-.cover__bg > .cover__skyline--back { bottom: 8vh; }
-
-.cover__corner {
-  position: absolute;
-  width: clamp(90px, 16vw, 170px);
-  aspect-ratio: 1;
-  fill: var(--gold-400);
-  opacity: .30;
-}
-.cover__corner--tl { top: 10px; left: 10px; }
-.cover__corner--tr { top: 10px; right: 10px; transform: scaleX(-1); }
-.cover__corner--bl { bottom: 10px; left: 10px; transform: scaleY(-1); }
-.cover__corner--br { bottom: 10px; right: 10px; transform: scale(-1); }
-
-.marawa {
-  position: absolute;
-  width: clamp(34px, 5vw, 56px);
-  aspect-ratio: 60 / 200;
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .35));
-  animation: sway 5s ease-in-out infinite;
-}
-.marawa--left  { top: 6vh; left: clamp(12px, 8vw, 120px); }
-.marawa--right { top: 6vh; right: clamp(12px, 8vw, 120px); animation-delay: -2.5s; }
-
-@keyframes sway {
-  0%, 100% { transform: rotate(-2.2deg); }
-  50%      { transform: rotate(2.2deg); }
+  pointer-events: none;
+  background: radial-gradient(ellipse 72% 58% at 50% 46%,
+    rgba(59, 8, 16, .80) 0%,
+    rgba(59, 8, 16, .48) 58%,
+    rgba(59, 8, 16, .06) 100%);
 }
 
 .cover__inner {
@@ -420,34 +413,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
   display: grid; place-items: center;
   padding: clamp(96px, 14vw, 140px) 20px clamp(56px, 8vw, 90px);
   overflow: hidden;
-  background: linear-gradient(180deg, var(--cream-200) 0%, var(--cream-100) 60%, var(--cream-50) 100%);
+  background-color: var(--cream-100);
 }
-.hero__bg { position: absolute; inset: 0; pointer-events: none; }
-.hero__mountains {
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(180deg, rgba(250, 243, 230, .25) 0%, rgba(250, 243, 230, .82) 62%, var(--cream-50) 100%),
-    radial-gradient(70% 50% at 20% 78%, rgba(122, 106, 78, .38), transparent 70%),
-    radial-gradient(60% 45% at 62% 82%, rgba(96, 84, 62, .34), transparent 72%),
-    radial-gradient(80% 55% at 92% 80%, rgba(122, 106, 78, .3), transparent 70%);
-}
-.hero__bg::after {
+.hero::before {
   content: "";
   position: absolute; inset: 0;
-  background-image: var(--songket);
-  opacity: .22;
+  pointer-events: none;
+  background: radial-gradient(ellipse 74% 62% at 50% 44%,
+    rgba(253, 249, 240, .90) 0%,
+    rgba(253, 249, 240, .58) 58%,
+    rgba(253, 249, 240, .04) 100%);
 }
-.hero__village {
-  position: absolute; inset-inline: 0; bottom: 0;
-  height: 30%;
-  color: var(--gold-600);
-  opacity: .22;
-  line-height: 0;
-}
-.hero__village svg { width: 100%; height: 100%; fill: currentColor; }
-
-.marawa--hero-left  { top: 12%; left: clamp(8px, 6vw, 90px); }
-.marawa--hero-right { top: 12%; right: clamp(8px, 6vw, 90px); animation-delay: -2.5s; }
 
 .hero__inner { position: relative; z-index: 2; text-align: center; max-width: 620px; }
 .hero__name {
@@ -529,17 +505,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- 11. AYAT ---------- */
 .verse { text-align: center; }
-.verse__floral {
-  position: absolute;
-  width: clamp(70px, 12vw, 130px);
-  aspect-ratio: 1;
-  fill: var(--gold-500);
-  opacity: .28;
-  top: 50%;
-}
-.verse__floral--left  { left: 2%;  transform: translateY(-50%); }
-.verse__floral--right { right: 2%; transform: translateY(-50%) scaleX(-1); }
-
 .verse__arabic {
   font-family: var(--ff-arab);
   font-size: clamp(19px, 3.4vw, 27px);
@@ -879,14 +844,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- 16. PENUTUP ---------- */
 .closing { text-align: center; padding-bottom: clamp(80px, 11vw, 120px); }
-.closing__skyline {
-  position: absolute; inset-inline: 0; bottom: 0;
-  height: 34%;
-  color: var(--gold-400);
-  opacity: .18;
-  line-height: 0;
-}
-.closing__skyline svg { width: 100%; height: 100%; fill: currentColor; }
 .closing__text { margin-top: 12px; font-size: 13px; color: rgba(250, 243, 230, .84); }
 .closing__motto {
   margin-top: 16px;
@@ -1009,9 +966,48 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .person--rev { flex-direction: row; text-align: left; }
 }
 
+/* Layar kecil memakai berkas latar versi 820px: seperempat ukuran unduhan,
+   dan pada lebar segitu mata tidak bisa membedakan hasilnya. */
+@media (max-width: 860px) {
+  .cover     { background-image: url("../img/bg/bg2-sm.webp"); }
+  .hero      { background-image: url("../img/bg/bg1-sm.webp"); }
+  .countdown { background-image: url("../img/bg/bg3-sm.webp"); }
+  .verse     { background-image: url("../img/bg/bg7-sm.webp"); }
+  .couple    { background-image: url("../img/bg/bg5-sm.webp"); }
+  .events    { background-image: url("../img/bg/bg8-sm.webp"); }
+  .gallery   { background-image: url("../img/bg/bg6-sm.webp"); }
+  .rsvp      { background-image: url("../img/bg/bg4-sm.webp"); }
+  .closing   { background-image: url("../img/bg/bg2-sm.webp"); }
+}
+
 @media (max-width: 640px) {
   body { font-size: 14px; }
   .container, .container--narrow { width: calc(100% - 32px); }
+
+  /* Di layar potret, `cover` memperbesar gambar sampai ornamen tepi kiri-kanan
+     terpotong habis. Menurunkan tinggi minimum tiap bagian membuat rasionya
+     kembali mendekati 3:2, sehingga lebih banyak ornamen yang terlihat. */
+  .band { padding-block: clamp(40px, 9vw, 60px); }
+  .hero { min-height: auto; }
+
+  /* Aturan .band di atas ikut memangkas jarak bawah penutup, padahal di ponsel
+     nav mengambang di tepi bawah layar dan akan menutupi baris terakhir. */
+  .closing { padding-bottom: 104px; }
+
+  /* Kabut dipekatkan sedikit: pada gambar yang terpotong, bagian tengah bisa
+     kebagian ornamen padat yang membuat teks susah dibaca. */
+  .band--cream::before, .band--cream-alt::before, .hero::before {
+    background: radial-gradient(ellipse 96% 72% at 50% 48%,
+      rgba(253, 249, 240, .93) 0%,
+      rgba(253, 249, 240, .74) 62%,
+      rgba(253, 249, 240, .22) 100%);
+  }
+  .band--maroon::before, .cover::before {
+    background: radial-gradient(ellipse 96% 74% at 50% 48%,
+      rgba(59, 8, 16, .84) 0%,
+      rgba(59, 8, 16, .62) 62%,
+      rgba(59, 8, 16, .24) 100%);
+  }
 
   .nav { top: auto; bottom: 14px; }
   .nav__list { padding: 4px; }
@@ -1022,9 +1018,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .fab { bottom: 82px; left: 14px; padding: 7px; }
   .fab__label { display: none; }
 
-  .marawa--left, .marawa--right { top: 4vh; }
-  .marawa--hero-left, .marawa--hero-right { width: 30px; }
-
   .cd { padding: 13px 4px 11px; }
   .cd__label { font-size: 10px; letter-spacing: .06em; }
 
@@ -1032,7 +1025,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .event__thumb { width: 100%; aspect-ratio: 16 / 9; }
   .event__list li { justify-content: center; }
 
-  .verse__floral { display: none; }
   .gallery__arrow--prev { left: -6px; }
   .gallery__arrow--next { right: -6px; }
 
@@ -1062,6 +1054,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media print {
   .cover, .nav, .music, .fab, .lightbox, .toast, .gallery__arrow { display: none !important; }
   .main { display: block !important; }
-  .band--maroon { background: #fff !important; color: #000 !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
+
+  /* Latar bergambar boros tinta dan membuat teks sulit dibaca saat dicetak. */
+  .hero, .countdown, .verse, .couple, .events, .gallery, .rsvp, .closing {
+    background-image: none !important;
+    background-color: #fff !important;
+    color: #000 !important;
+  }
+  .hero::before, .band--maroon::before,
+  .band--cream::before, .band--cream-alt::before { display: none !important; }
+  .title--light, .subtitle--light, .event__title, .cd__num, .cd__label { color: #000 !important; }
 }

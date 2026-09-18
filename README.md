@@ -61,6 +61,44 @@ Ganti berkas di `assets/img/` dengan foto asli. Nama berkas boleh diubah asalkan
 | `akad.svg`, `resepsi.svg` | Kartu acara | 1 : 1 |
 | `og-cover.svg` | Pratinjau saat dibagikan | 1200 × 630 |
 
+## Latar bergambar
+
+Tiap bagian punya latar sendiri dari `assets/img/bg/`:
+
+| Bagian | Latar | Bagian | Latar |
+| --- | --- | --- | --- |
+| Cover | `bg2` | Mempelai | `bg5` |
+| Home | `bg1` | Detail Acara | `bg8` |
+| Hitung Mundur | `bg3` | Galeri | `bg6` |
+| Ayat | `bg7` | RSVP | `bg4` |
+| | | Penutup | `bg2` |
+
+### Mengganti latar
+
+Ubah `background-image` pada bagian **LATAR BERGAMBAR** di
+`assets/css/style.css`. Ada dua tempat: aturan utama, dan blok
+`@media (max-width: 860px)` yang memakai berkas `-sm`.
+
+Sumber PNG aslinya ada di `assets/img/bg1.png` … `bg7.png` (tidak ikut
+di-commit, lihat `.gitignore`). Untuk membuat ulang versi WebP setelah
+menambah atau mengganti PNG, jalankan skrip pengolahnya:
+
+```bash
+python tools/optimize-bg.py
+```
+
+Skrip itu menghasilkan dua ukuran per gambar — 1536 px untuk layar besar dan
+820 px untuk ponsel — dalam format WebP. Hasilnya **16,5 MB → 0,96 MB**
+(hemat 94%), yang penting karena undangan kebanyakan dibuka lewat data seluler.
+
+### Cara latar menyesuaikan layar
+
+Latarnya lanskap 3:2 dengan ornamen di keempat tepi dan ruang kosong di tengah.
+Di layar potret, `background-size: cover` memotong sisi kiri dan kanan — dan itu
+memang yang diinginkan, karena bagian paling khas (ornamen atas dan deretan
+rumah gadang di bawah) tetap utuh. Tiap bagian juga punya kabut radial di
+tengah supaya teks tetap terbaca tanpa meredam ornamen tepinya.
+
 ### Musik
 
 Letakkan `music.mp3` di `assets/audio/`. Lihat `assets/audio/README.md`.

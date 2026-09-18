@@ -24,23 +24,6 @@
 <!-- ============ SVG SPRITE (ornamen & ikon) ============ -->
 <svg class="sprite" aria-hidden="true" focusable="false">
   <defs>
-    <!-- Siluet Rumah Gadang (gonjong bertingkat) -->
-    <symbol id="ico-gadang" viewBox="0 0 200 120">
-      <path d="M0,120 L0,96 C13,94 22,68 26,12 C32,64 46,86 62,88 L62,74 C76,72 86,44 90,2 C96,42 110,66 126,68 L126,88 C142,86 156,64 162,12 C166,68 177,94 190,96 L190,120 Z"/>
-      <path d="M14,120 L14,104 L176,104 L176,120 Z" opacity=".55"/>
-      <path d="M30,104 L30,120 M56,104 L56,120 M82,104 L82,120 M108,104 L108,120 M134,104 L134,120 M160,104 L160,120" stroke="currentColor" stroke-width="3" opacity=".35"/>
-    </symbol>
-
-    <!-- Marawa: umbul-umbul Minangkabau (hitam, merah, kuning) -->
-    <symbol id="ico-marawa" viewBox="0 0 60 200">
-      <circle cx="30" cy="8" r="7" fill="#C9A55C"/>
-      <rect x="27" y="12" width="6" height="18" fill="#A8813A"/>
-      <path d="M8,28 H52 V150 L30,128 L8,150 Z" fill="#1A1412"/>
-      <path d="M13,28 H47 V142 L30,125 L13,142 Z" fill="#B21E28"/>
-      <path d="M19,28 H41 V132 L30,121 L19,132 Z" fill="#E0A82E"/>
-      <rect x="6" y="24" width="48" height="7" rx="3" fill="#C9A55C"/>
-    </symbol>
-
     <!-- Motif songket / bunga -->
     <symbol id="ico-songket" viewBox="0 0 120 40">
       <path d="M60,4 C68,14 78,18 92,20 C78,22 68,26 60,36 C52,26 42,22 28,20 C42,18 52,14 60,4 Z"/>
@@ -87,21 +70,6 @@
      1. COVER
 ============================================================ -->
 <section class="cover" id="cover">
-  <div class="cover__bg" aria-hidden="true">
-    <div class="cover__skyline cover__skyline--back">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><use href="#ico-gadang" x="0" width="200" height="120"/><use href="#ico-gadang" x="200" width="200" height="120"/><use href="#ico-gadang" x="400" width="200" height="120"/><use href="#ico-gadang" x="600" width="200" height="120"/><use href="#ico-gadang" x="800" width="200" height="120"/><use href="#ico-gadang" x="1000" width="200" height="120"/></svg>
-    </div>
-    <div class="cover__skyline cover__skyline--front">
-      <svg viewBox="0 0 900 120" preserveAspectRatio="none"><use href="#ico-gadang" x="0" width="300" height="120"/><use href="#ico-gadang" x="300" width="300" height="120"/><use href="#ico-gadang" x="600" width="300" height="120"/></svg>
-    </div>
-    <svg class="cover__corner cover__corner--tl"><use href="#ico-corner"/></svg>
-    <svg class="cover__corner cover__corner--tr"><use href="#ico-corner"/></svg>
-    <svg class="cover__corner cover__corner--bl"><use href="#ico-corner"/></svg>
-    <svg class="cover__corner cover__corner--br"><use href="#ico-corner"/></svg>
-    <svg class="marawa marawa--left"><use href="#ico-marawa"/></svg>
-    <svg class="marawa marawa--right"><use href="#ico-marawa"/></svg>
-  </div>
-
   <div class="cover__inner">
     <svg class="cover__crown" viewBox="0 0 64 40"><use href="#ico-crown"/></svg>
     <p class="cover__eyebrow">The Wedding of</p>
@@ -150,15 +118,6 @@
        2. HOME / HERO
   ========================================================== -->
   <section class="hero" id="home">
-    <div class="hero__bg" aria-hidden="true">
-      <div class="hero__mountains"></div>
-      <div class="hero__village">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><use href="#ico-gadang" x="0" width="240" height="120"/><use href="#ico-gadang" x="240" width="240" height="120"/><use href="#ico-gadang" x="480" width="240" height="120"/><use href="#ico-gadang" x="720" width="240" height="120"/><use href="#ico-gadang" x="960" width="240" height="120"/></svg>
-      </div>
-      <svg class="marawa marawa--hero-left"><use href="#ico-marawa"/></svg>
-      <svg class="marawa marawa--hero-right"><use href="#ico-marawa"/></svg>
-    </div>
-
     <div class="hero__inner reveal">
       <p class="eyebrow eyebrow--dark">The Wedding of</p>
       <h2 class="hero__name">Yogi Pratama</h2>
@@ -199,8 +158,6 @@
        4. AYAT
   ========================================================== -->
   <section class="verse band band--cream">
-    <svg class="verse__floral verse__floral--left" viewBox="0 0 120 120"><use href="#ico-corner"/></svg>
-    <svg class="verse__floral verse__floral--right" viewBox="0 0 120 120"><use href="#ico-corner"/></svg>
     <div class="container container--narrow reveal">
       <p class="verse__arabic" lang="ar" dir="rtl">وَمِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَاجًا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةً وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَءَايَٰتٍ لِّقَوْمٍ يَتَفَكَّرُونَ</p>
       <p class="verse__ref">(QS. Ar-Rum : 21)</p>
@@ -410,9 +367,6 @@
   ========================================================== -->
   <footer class="closing band band--maroon">
     <div class="band__ornament" aria-hidden="true"></div>
-    <div class="closing__skyline" aria-hidden="true">
-      <svg viewBox="0 0 1200 120" preserveAspectRatio="none"><use href="#ico-gadang" x="0" width="300" height="120"/><use href="#ico-gadang" x="300" width="300" height="120"/><use href="#ico-gadang" x="600" width="300" height="120"/><use href="#ico-gadang" x="900" width="300" height="120"/></svg>
-    </div>
     <div class="container container--narrow reveal">
       <h3 class="title title--light">Terima Kasih</h3>
       <p class="closing__text">
