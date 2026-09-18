@@ -651,39 +651,37 @@ button { font: inherit; color: inherit; cursor: pointer; }
   50%      { transform: scaleX(-1) rotate(1.6deg); }
 }
 
-/* Kartu acara di atas latar krem: kartu tembus-pandang yang dirancang untuk
-   maroon jadi tak terlihat, jadi di sini ia menjadi kartu putih bergaris. */
-.band--cream-alt .event,
-.band--cream .event {
-  background: rgba(255, 255, 255, .74);
-  border-color: var(--cream-300);
-}
-.band--cream-alt .event:hover,
-.band--cream .event:hover { background: rgba(255, 255, 255, .92); }
-.band--cream-alt .event__title,
-.band--cream .event__title { color: var(--maroon-700); }
-.band--cream-alt .event__list li,
-.band--cream .event__list li { color: var(--ink-700); }
-.band--cream-alt .event__list svg,
-.band--cream .event__list svg { color: var(--gold-500); }
-
 .events__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: clamp(16px, 2.6vw, 28px);
 }
+/* Kartunya maroon pekat meski bagiannya berlatar krem. Sebelumnya isinya
+   tembus pandang dan warnanya dipinjam dari band di belakangnya — begitu
+   bandnya jadi krem, kartunya ikut memudar dan kehilangan bobot. Warna
+   sendiri membuatnya berdiri sebagai kartu, bukan sekadar bidang bergaris. */
 .event {
   display: flex;
   gap: 18px;
   align-items: center;
   padding: 18px;
-  border: 1px solid rgba(201, 165, 92, .45);
+  border: 1px solid var(--gold-400);
   border-radius: var(--radius);
-  background: rgba(253, 249, 240, .07);
-  backdrop-filter: blur(3px);
-  transition: transform .35s var(--ease), background .35s var(--ease);
+  background: linear-gradient(150deg, var(--maroon-600), var(--maroon-800) 62%, var(--maroon-900));
+  color: var(--cream-100);
+  box-shadow: var(--shadow-md);
+  transition: transform .35s var(--ease), box-shadow .35s var(--ease);
 }
-.event:hover { transform: translateY(-4px); background: rgba(253, 249, 240, .12); }
+.event:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* Tombol di dalam kartu maroon tidak boleh ikut maroon — ia akan lenyap ke
+   dalam kartunya. Dijadikan bergaris emas seperti tombol di cover. */
+.event .btn {
+  --btn-bg: rgba(201, 165, 92, .14);
+  --btn-fg: var(--gold-200);
+  --btn-bd: var(--gold-400);
+}
+.event .btn:hover { background: rgba(201, 165, 92, .28); }
 .event__thumb {
   flex: none;
   width: clamp(96px, 14vw, 126px);
