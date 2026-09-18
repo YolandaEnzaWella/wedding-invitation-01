@@ -54,14 +54,36 @@ PORSI_PITA = 0.46
 
 
 def warna_tengah(im):
-    """Warna rata-rata pita tengah gambar, untuk mengisi ruang antara kedua
-    pita. Diambil dari sepertiga bagian tengah karena di situlah bidang
-    kosongnya — bukan dari seluruh gambar, yang akan tertarik gelap oleh
-    ornamen tepi."""
+    """Warna pengisi ruang di antara kedua pita.
+
+    Diambil dari baris tepat di tempat pita berakhir, bukan dari rata-rata
+    seluruh bagian tengah. Rata-rata bagian tengah menghasilkan warna yang
+    sedikit berbeda dari warna di ujung pita, dan selisih sekecil apa pun
+    tampak sebagai garis mendatar yang membelah layar."""
     h = im.height
-    tengah = im.crop((0, round(h * 0.38), im.width, round(h * 0.62)))
-    r, g, b = tengah.resize((1, 1), Image.LANCZOS).getpixel((0, 0))
-    return "#%02X%02X%02X" % (r, g, b)
+    a = round(h * PORSI_PITA)
+    b = round(h * (1 - PORSI_PITA))
+    sambungan = im.crop((0, min(a, b), im.width, max(a, b) + 1))
+    r, g, bb = sambungan.resize((1, 1), Image.LANCZOS).getpixel((0, 0))
+    return "#%02X%02X%02X" % (r, g, bb)
+
+
+def _luruhkan(pita, dari_bawah):
+    """Buat tepi DALAM pita memudar jadi tembus pandang.
+
+    Tanpa ini pita berhenti mendadak dan batas antara gambar dan warna
+    pengisi terlihat sebagai kotak terpotong. Dengan tepi yang meluruh,
+    gambarnya larut ke warna pengisi dan sambungannya hilang."""
+    lebar, tinggi = pita.size
+    ramp = round(tinggi * 0.34)          # sepertiga bagian dalam yang meluruh
+    alpha = Image.new("L", (1, tinggi), 255)
+    px = alpha.load()
+    for i in range(ramp):
+        nilai = round(255 * i / ramp)    # 0 di tepi paling dalam
+        y = tinggi - 1 - i if dari_bawah is False else i
+        px[0, y] = nilai
+    pita.putalpha(alpha.resize((lebar, tinggi)))
+    return pita
 
 
 def buat_pita(im, stem, out_dir):
@@ -73,12 +95,13 @@ def buat_pita(im, stem, out_dir):
 
     potong = round(tinggi * PORSI_PITA)
     hasil = []
-    for akhiran, kotak in (
-        ("-top", (0, 0, lebar, potong)),
-        ("-bot", (0, tinggi - potong, lebar, tinggi)),
+    for akhiran, kotak, dari_bawah in (
+        ("-top", (0, 0, lebar, potong), False),
+        ("-bot", (0, tinggi - potong, lebar, tinggi), True),
     ):
+        pita = _luruhkan(kecil.crop(kotak).convert("RGBA"), dari_bawah)
         dest = os.path.join(out_dir, f"{stem}{akhiran}.webp")
-        kecil.crop(kotak).save(dest, "WEBP", quality=KUALITAS_PITA, method=6)
+        pita.save(dest, "WEBP", quality=KUALITAS_PITA, method=6, exact=True)
         hasil.append((f"{stem}{akhiran}.webp", lebar, potong, os.path.getsize(dest)))
     return hasil
 

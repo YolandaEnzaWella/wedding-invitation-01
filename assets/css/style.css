@@ -46,7 +46,14 @@
 /* ---------- 2. RESET ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  /* Warna kanvas di luar halaman. Bagian penutupnya maroon, jadi tanpa ini
+     tarikan pegas di iOS dan ruang sisa di bawah halaman memperlihatkan krem
+     dari <body> — tampak seperti kotak kosong yang menggantung. */
+  background-color: var(--maroon-900);
+}
 
 body {
   margin: 0;
@@ -56,6 +63,8 @@ body {
   color: var(--ink-700);
   background: var(--cream-100);
   overflow-x: hidden;
+  /* Menahan tarikan pegas merembet ke halaman induk bila undangan disematkan */
+  overscroll-behavior-y: none;
 }
 
 body.is-locked { overflow: hidden; height: 100vh; }
@@ -109,17 +118,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background-size: cover;
 }
 
-.cover     { background-image: url("../img/bg/bg2.webp"); }
-.hero      { background-image: url("../img/bg/bg1.webp"); }
-.countdown { background-image: url("../img/bg/bg3.webp"); }
-.verse     { background-image: url("../img/bg/bg7.webp"); }
-.couple    { background-image: url("../img/bg/bg5.webp"); }
-/* bg8 paling tenang di antara latar maroon — kartu acara yang padat teks
-   terbaca lebih bersih di atasnya daripada di atas bg3 yang ramai. */
-.events    { background-image: url("../img/bg/bg8.webp"); }
-.gallery   { background-image: url("../img/bg/bg6.webp"); }
-.rsvp      { background-image: url("../img/bg/bg4.webp"); }
-.closing   { background-image: url("../img/bg/bg2.webp"); }
+/* Urutannya berselang maroon–krem–maroon–krem sampai penutup. Dua bagian
+   sewarna yang bersebelahan membuat batasnya hilang dan halaman terbaca
+   seperti satu blok panjang, bukan rangkaian babak. */
+.cover     { background-image: url("../img/bg/bg2.webp"); }  /* maroon */
+.hero      { background-image: url("../img/bg/bg1.webp"); }  /* krem   */
+.countdown { background-image: url("../img/bg/bg3.webp"); }  /* maroon */
+.verse     { background-image: url("../img/bg/bg7.webp"); }  /* krem   */
+.couple    { background-image: url("../img/bg/bg2.webp"); }  /* maroon */
+.events    { background-image: url("../img/bg/bg6.webp"); }  /* krem   */
+/* bg8 paling tenang di antara latar maroon, jadi foto galerinya yang menonjol */
+.gallery   { background-image: url("../img/bg/bg8.webp"); }  /* maroon */
+.rsvp      { background-image: url("../img/bg/bg4.webp"); }  /* krem   */
+.closing   { background-image: url("../img/bg/bg3.webp"); }  /* maroon */
 
 /* Kabut di tengah: menjaga teks tetap terbaca tanpa meredam ornamen tepi,
    yang justru jadi daya tarik tiap latar. */
@@ -590,6 +601,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .person__desc { font-size: 12.5px; color: var(--ink-500); margin-top: 6px; }
 .person__suku { font-size: 12.5px; color: var(--ink-500); margin-top: 4px; }
 
+/* Mempelai kini berlatar maroon, Detail Acara berlatar krem. Warnanya ditulis
+   menurut band induknya, bukan dipatok ke kelas bagian — kalau suatu saat
+   urutan selang-selingnya digeser, teksnya ikut menyesuaikan sendiri. */
+.band--maroon .person__name { color: var(--gold-200); }
+.band--maroon .person__desc,
+.band--maroon .person__suku { color: rgba(250, 243, 230, .78); }
+.band--maroon .couple__amp span { color: var(--gold-300); }
+
 .couple__amp {
   display: grid; place-items: center;
   width: clamp(64px, 9vw, 100px);
@@ -631,6 +650,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
   0%, 100% { transform: scaleX(-1) rotate(-1.6deg); }
   50%      { transform: scaleX(-1) rotate(1.6deg); }
 }
+
+/* Kartu acara di atas latar krem: kartu tembus-pandang yang dirancang untuk
+   maroon jadi tak terlihat, jadi di sini ia menjadi kartu putih bergaris. */
+.band--cream-alt .event,
+.band--cream .event {
+  background: rgba(255, 255, 255, .74);
+  border-color: var(--cream-300);
+}
+.band--cream-alt .event:hover,
+.band--cream .event:hover { background: rgba(255, 255, 255, .92); }
+.band--cream-alt .event__title,
+.band--cream .event__title { color: var(--maroon-700); }
+.band--cream-alt .event__list li,
+.band--cream .event__list li { color: var(--ink-700); }
+.band--cream-alt .event__list svg,
+.band--cream .event__list svg { color: var(--gold-500); }
 
 .events__grid {
   display: grid;
@@ -675,20 +710,38 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .event__list svg { width: 15px; height: 15px; flex: none; color: var(--gold-400); }
 
 /* ---------- 14. GALERI ---------- */
-.gallery__scroller { position: relative; margin-top: 4px; }
+/* Galeri berjalan sendiri dan berulang tanpa putus. Daftarnya digandakan
+   oleh JavaScript, lalu seluruh jalur digeser tepat separuh panjangnya —
+   pada titik itu salinan kedua berada persis di posisi awal salinan pertama,
+   sehingga pengulangannya tidak terlihat sambungannya. */
+.gallery__scroller {
+  position: relative;
+  margin-top: 4px;
+  overflow: hidden;
+  /* Ujung kiri dan kanan dibuat memudar supaya foto tidak terpotong mendadak
+     di tepi layar, melainkan seolah masuk dan keluar dari balik halaman. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
 .gallery__track {
   display: flex;
   gap: 14px;
-  overflow-x: auto;
-  padding: 6px 2px 14px;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
-  scrollbar-color: var(--gold-400) transparent;
+  width: max-content;
+  padding: 6px 0 14px;
 }
-.gallery__track::-webkit-scrollbar { height: 6px; }
-.gallery__track::-webkit-scrollbar-thumb { background: var(--gold-400); border-radius: 999px; }
-.gallery__track::-webkit-scrollbar-track { background: var(--cream-200); border-radius: 999px; }
-.gallery__track > li { flex: 0 0 auto; scroll-snap-align: start; }
+.gallery__track.is-berjalan { animation: galeriBerjalan var(--durasi, 60s) linear infinite; }
+.gallery__track > li { flex: 0 0 auto; }
+
+@keyframes galeriBerjalan {
+  from { transform: translateX(0); }
+  /* Jarak tempuhnya separuh jalur ditambah satu jarak antar-foto, sebab
+     `gap` menyisipkan satu celah tambahan di sambungan kedua salinan. */
+  to   { transform: translateX(calc(-50% - 7px)); }
+}
+
+/* Berhenti saat disentuh atau ditunjuk, supaya tamu bisa mengamati satu foto */
+.gallery__scroller:hover .gallery__track.is-berjalan,
+.gallery__track.is-berjalan:focus-within { animation-play-state: paused; }
 
 /* Tinggi seragam, lebar mengikuti bentuk asli tiap foto. Kalau semua dipaksa
    3:2, foto tegak akan terpotong di atas dan bawah — persis di suntiang
@@ -705,7 +758,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
   background: var(--cream-200);
   transition: transform .35s var(--ease), box-shadow .35s var(--ease);
 }
-.gallery__item img { height: 100%; width: auto; display: block; }
+/* `max-width: 100%` dari reset harus dibatalkan di sini. Lebar tombolnya
+   ditentukan oleh gambar, sedangkan max-width gambarnya dihitung dari lebar
+   tombol — lingkaran itu membuat Safari iOS menetapkan lebar nol, dan seluruh
+   deret galeri hilang tanpa jejak. */
+.gallery__item img {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  display: block;
+}
 .gallery__item:hover { transform: translateY(-4px) scale(1.015); box-shadow: var(--shadow-md); }
 .gallery__zoom {
   position: absolute; inset: 0;
@@ -718,23 +780,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .gallery__zoom svg { width: 24px; height: 24px; }
 .gallery__item:hover .gallery__zoom, .gallery__item:focus-visible .gallery__zoom { opacity: 1; }
 
-.gallery__arrow {
-  position: absolute; top: 50%;
-  z-index: 3;
-  width: 38px; height: 38px;
-  display: grid; place-items: center;
-  transform: translateY(-60%);
-  border: 1px solid var(--gold-400);
-  border-radius: 50%;
-  background: var(--cream-50);
-  color: var(--maroon-700);
-  box-shadow: var(--shadow-sm);
-  transition: background .25s var(--ease), transform .25s var(--ease);
-}
-.gallery__arrow:hover { background: var(--gold-200); }
-.gallery__arrow svg { width: 18px; height: 18px; }
-.gallery__arrow--prev { left: -12px; }
-.gallery__arrow--next { right: -12px; }
 
 /* ---------- 15. RSVP ---------- */
 .rsvp__grid {
@@ -1048,6 +1093,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .title[data-anim].is-in { letter-spacing: .01em; }
 
+/* Elemen yang sudah muncul tetap harus menanggapi kursor. Aturan
+   `[data-anim].is-in { transform: none }` berbobot sama dengan `.event:hover`
+   tetapi ditulis belakangan, sehingga tanpa dua baris ini ia membatalkan
+   seluruh efek angkat pada kartu acara dan foto galeri. */
+.event[data-anim].is-in:hover { transform: translateY(-4px); }
+
 /* Kedua mempelai datang bersamaan dari kiri dan kanan — kalau diberi jeda
    berurutan, yang satu terasa lebih utama daripada yang lain. Ampersand-nya
    menyusul, seolah keduanya bertemu di tengah. */
@@ -1175,14 +1226,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .person.is-in .person__frame { transform: none; }
 
-/* Foto galeri merapat dari sedikit membesar. Aman karena tombolnya sudah
-   memotong apa pun yang melewati tepi. */
-.gallery__item img {
-  transform: scale(1.14);
-  transition: transform 1.3s var(--ease);
-  transition-delay: var(--d, 0ms);
-}
-.gallery__item.is-in img { transform: none; }
+/* Foto galeri tidak lagi diberi animasi merapat. Sejak deretnya berjalan
+   sendiri, itemnya tak lagi memakai data-anim — skala awal 1,14 tidak akan
+   pernah dikembalikan ke normal dan fotonya tersangkut membesar selamanya.
+   Geraknya sudah datang dari deret yang berjalan itu. */
 
 /* ---- Hitung mundur: angka berganti ---- */
 .cd { perspective: 460px; }
@@ -1202,7 +1249,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 860px) {
   .couple__grid { grid-template-columns: 1fr; gap: 22px; }
   .couple__amp { margin-inline: auto; }
-  .person--rev { flex-direction: row; text-align: left; }
+  /* Arah baris SENGAJA tidak diseragamkan di layar sempit. Dibiarkan
+     berlawanan, foto pria jatuh di kiri dan foto wanita di kanan, sehingga
+     kolom tunggalnya tetap seimbang dan tidak menumpuk di satu sisi. */
 }
 
 /* Layar kecil melintang tetap memakai gambar utuh versi 820px — di sana
@@ -1212,11 +1261,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .hero      { background-image: url("../img/bg/bg1-sm.webp"); }
   .countdown { background-image: url("../img/bg/bg3-sm.webp"); }
   .verse     { background-image: url("../img/bg/bg7-sm.webp"); }
-  .couple    { background-image: url("../img/bg/bg5-sm.webp"); }
-  .events    { background-image: url("../img/bg/bg8-sm.webp"); }
-  .gallery   { background-image: url("../img/bg/bg6-sm.webp"); }
+  .couple    { background-image: url("../img/bg/bg2-sm.webp"); }
+  .events    { background-image: url("../img/bg/bg6-sm.webp"); }
+  .gallery   { background-image: url("../img/bg/bg8-sm.webp"); }
   .rsvp      { background-image: url("../img/bg/bg4-sm.webp"); }
-  .closing   { background-image: url("../img/bg/bg2-sm.webp"); }
+  .closing   { background-image: url("../img/bg/bg3-sm.webp"); }
 }
 
 /* ---------- LATAR DI LAYAR TEGAK ----------
@@ -1241,7 +1290,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
   .cover {
     background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
-    background-color: #400906;
+    background-color: #410906;
   }
   .hero {
     background-image: url("../img/bg/bg1-top.webp"), url("../img/bg/bg1-bot.webp");
@@ -1253,27 +1302,27 @@ button { font: inherit; color: inherit; cursor: pointer; }
   }
   .verse {
     background-image: url("../img/bg/bg7-top.webp"), url("../img/bg/bg7-bot.webp");
-    background-color: #F3E4D0;
+    background-color: #F4E6D2;
   }
   .couple {
-    background-image: url("../img/bg/bg5-top.webp"), url("../img/bg/bg5-bot.webp");
-    background-color: #F3E3CE;
+    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
+    background-color: #410906;
   }
   .events {
+    background-image: url("../img/bg/bg6-top.webp"), url("../img/bg/bg6-bot.webp");
+    background-color: #F2E0C8;
+  }
+  .gallery {
     background-image: url("../img/bg/bg8-top.webp"), url("../img/bg/bg8-bot.webp");
     background-color: #3A0202;
   }
-  .gallery {
-    background-image: url("../img/bg/bg6-top.webp"), url("../img/bg/bg6-bot.webp");
-    background-color: #F2E0C7;
-  }
   .rsvp {
     background-image: url("../img/bg/bg4-top.webp"), url("../img/bg/bg4-bot.webp");
-    background-color: #F5E7D3;
+    background-color: #F6E8D5;
   }
   .closing {
-    background-image: url("../img/bg/bg2-top.webp"), url("../img/bg/bg2-bot.webp");
-    background-color: #400906;
+    background-image: url("../img/bg/bg3-top.webp"), url("../img/bg/bg3-bot.webp");
+    background-color: #410707;
   }
 }
 
@@ -1320,11 +1369,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .cd__label { font-size: 10px; letter-spacing: .06em; }
 
   .event { flex-direction: column; text-align: center; align-items: stretch; }
-  .event__thumb { width: 100%; aspect-ratio: 16 / 9; }
+  /* Ilustrasi masjid dan rumah gadang berbentuk persegi. Dipaksa 16:9 seperti
+     sebelumnya, `object-fit: cover` memangkas kubah di atas dan tangga di
+     bawah — bagian yang justru menerangkan gedungnya. */
+  .event__thumb {
+    width: 100%;
+    max-width: 250px;
+    margin-inline: auto;
+    aspect-ratio: 1;
+  }
   .event__list li { justify-content: center; }
-
-  .gallery__arrow--prev { left: -6px; }
-  .gallery__arrow--next { right: -6px; }
 
   .lightbox { grid-template-columns: 1fr; grid-template-rows: 1fr auto; padding-bottom: 20px; }
   .lightbox__figure { grid-row: 1; }
@@ -1336,6 +1390,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 @media (max-width: 380px) {
   .nav__link span { display: none; }
   .nav__link { padding: 9px 13px; }
+}
+
+/* Ditulis paling akhir di antara aturan layar kecil supaya menang atas
+   `.band { padding-block }` di blok 640px. Pita ornamen di layar tegak
+   setinggi sekitar 115px; dengan padding 40–60px, isi bagian duduk tepat di
+   atas ornamennya — angka hitung mundur terlihat menindih bingkai dan mepet
+   ke tepi bawah. */
+@media (max-width: 860px) and (orientation: portrait) {
+  .band { padding-block: 92px; }
+  .closing { padding-bottom: 116px; }   /* ditambah lagi untuk nav mengambang */
 }
 
 /* ---------- 22. AKSESIBILITAS & CETAK ---------- */
@@ -1350,7 +1414,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 
 @media print {
-  .cover, .nav, .music, .fab, .lightbox, .toast, .gallery__arrow { display: none !important; }
+  .cover, .nav, .music, .fab, .lightbox, .toast { display: none !important; }
   .main { display: block !important; }
   .reveal { opacity: 1 !important; transform: none !important; }
 

@@ -284,9 +284,26 @@
 
   function tampilkan(el) { el.classList.add('is-in'); }
 
+  function sudahLewatiGaris(el) {
+    var r = el.getBoundingClientRect();
+
+    // Elemen di dalam .main yang belum ditampilkan melaporkan kotak serba nol.
+    // Tanpa penjagaan ini, pemeriksaan di bawah bernilai benar untuk SEMUA
+    // elemen sejak halaman dimuat — seluruh animasi masuk habis terpakai
+    // sebelum tamu sempat menekan tombol buka, dan yang tersisa hanyalah
+    // animasi cover yang memakai @keyframes, bukan transition.
+    if (r.width === 0 && r.height === 0) return false;
+
+    // 0,82 bukan 0,95: elemen baru dinyatakan masuk setelah benar-benar
+    // berada di dalam layar, bukan saat masih menyerempet tepi bawah.
+    // Dengan ambang yang terlalu dekat ke tepi, animasinya sudah selesai
+    // sebelum tamu sempat melihat elemennya.
+    return r.top < window.innerHeight * 0.82;
+  }
+
   function revealAll() {
     revealEls.forEach(function (el) {
-      if (el.getBoundingClientRect().top < window.innerHeight * 0.95) tampilkan(el);
+      if (sudahLewatiGaris(el)) tampilkan(el);
     });
   }
 
@@ -299,7 +316,7 @@
         // ulang tiap kali tamu menggulir naik-turun melewatinya.
         io.unobserve(entry.target);
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+    }, { threshold: 0.1, rootMargin: '0px 0px -18% 0px' });
     revealEls.forEach(function (el) { io.observe(el); });
 
     // Jaring pengaman untuk elemen yang terlewat pengamat. Gambar dan huruf
@@ -435,15 +452,38 @@
       startX = null;
     }, { passive: true });
 
-    // Panah geser daftar foto
-    function scrollByCard(dir) {
-      var card = items[0];
-      var step = card ? card.getBoundingClientRect().width + 14 : 220;
-      track.scrollBy({ left: dir * step * 2, behavior: 'smooth' });
-    }
-    var prev = $('#galPrev'), next = $('#galNext');
-    if (prev) prev.addEventListener('click', function () { scrollByCard(-1); });
-    if (next) next.addEventListener('click', function () { scrollByCard(1); });
+    /* ---- Galeri berjalan sendiri dan berulang ----
+       Daftarnya digandakan supaya ada isi yang menyusul ketika salinan
+       pertama sudah bergeser habis; tanpa itu akan muncul ruang kosong
+       panjang setiap kali putaran hendak mengulang. */
+    (function jalankanGaleri() {
+      var salinan = items.map(function (btn) {
+        return btn.parentNode.cloneNode(true);
+      });
+
+      salinan.forEach(function (li) {
+        // Salinan hanyalah pengisi mata. Disembunyikan dari pembaca layar dan
+        // dikeluarkan dari urutan tab supaya tamu tidak menyusuri sembilan
+        // foto yang sama dua kali.
+        li.setAttribute('aria-hidden', 'true');
+        var b = li.querySelector('.gallery__item');
+        if (b) b.tabIndex = -1;
+        track.appendChild(li);
+      });
+
+      // Kecepatannya dipatok per foto, bukan durasi tetap. Kalau jumlah
+      // fotonya berubah, lajunya tetap sama dan tidak mendadak melesat.
+      track.style.setProperty('--durasi', (items.length * 6.5) + 's');
+      track.classList.add('is-berjalan');
+
+      // Salinan ikut membuka lightbox, memakai nomor foto aslinya.
+      track.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.gallery__item') : null;
+        if (!btn || items.indexOf(btn) !== -1) return;   // yang asli sudah ditangani
+        var i = parseInt(btn.getAttribute('data-index'), 10);
+        if (!isNaN(i)) open(i);
+      });
+    })();
   })();
 
   /* ---------------------------------------------------------
