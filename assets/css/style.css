@@ -1382,11 +1382,40 @@ button { font: inherit; color: inherit; cursor: pointer; }
   }
   .event__list li { justify-content: center; }
 
-  .lightbox { grid-template-columns: 1fr; grid-template-rows: 1fr auto; padding-bottom: 20px; }
-  .lightbox__figure { grid-row: 1; }
-  .lightbox__nav { position: static; }
-  .lightbox__nav--prev { grid-row: 2; justify-self: end; margin-right: 60px; }
-  .lightbox__nav--next { grid-row: 2; justify-self: start; margin-left: 60px; }
+  /* Panah ditempel di tepi kiri dan kanan setinggi tengah, bukan dijejer di
+     baris bawah. Baris bawah itu ikut memakan tinggi grid, sehingga gambarnya
+     terdorong ke atas dan tidak pernah benar-benar di tengah — sekaligus
+     panahnya jatuh tepat di belakang nav mengambang. */
+  .lightbox {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    padding: 62px 14px;          /* atas dan bawah sama, supaya betul di tengah */
+  }
+  .lightbox__figure {
+    grid-area: 1 / 1;
+    justify-self: center;
+    align-self: center;
+    position: relative;
+  }
+  /* Keterangan digantung di bawah gambar tanpa ikut menambah tinggi figure.
+     Kalau ia tetap dalam alur, tinggi figure bertambah dan yang duduk di
+     tengah layar adalah gabungan gambar plus keterangan — gambarnya sendiri
+     jadi naik beberapa belas piksel. */
+  .lightbox__caption {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 10px;
+  }
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    margin: 0;
+    transform: translateY(-50%);
+  }
+  .lightbox__nav--prev { left: 10px; }
+  .lightbox__nav--next { right: 10px; }
 }
 
 @media (max-width: 380px) {
