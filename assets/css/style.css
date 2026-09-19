@@ -1370,6 +1370,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .cd { padding: 13px 4px 11px; }
   .cd__label { font-size: 10px; letter-spacing: .06em; }
 
+  /* Foto mempelai ditumpuk di atas namanya, teks rata tengah di bawahnya.
+     Bersanding di layar sesempit ini, foto tinggal 112px dan teksnya terjepit
+     jadi empat baris. Ditumpuk, fotonya bisa dua kali lebih besar dan
+     namanya punya lebar penuh.
+     Karena keduanya kini rata tengah, arah baris yang berselang kiri-kanan
+     tidak lagi berpengaruh — itu hanya berlaku saat foto masih bersanding. */
+  .person,
+  .person--rev {
+    flex-direction: column;
+    text-align: center;
+    gap: 14px;
+  }
+  .person__frame { width: clamp(160px, 47vw, 215px); }
+
   .event { flex-direction: column; text-align: center; align-items: stretch; }
   /* Ilustrasi masjid dan rumah gadang berbentuk persegi. Dipaksa 16:9 seperti
      sebelumnya, `object-fit: cover` memangkas kubah di atas dan tangga di
